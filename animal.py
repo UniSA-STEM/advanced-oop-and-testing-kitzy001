@@ -1,6 +1,6 @@
 '''
 File: animal.py
-Description: A brief description of this Python module.
+Description: This file contains the Animal class and relevant subclasses.
 Author: Zoe Kittel
 ID: 110484404
 Username: kitzy001
