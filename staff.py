@@ -9,11 +9,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 from abc import ABC, abstractmethod
 import random
 
-class StaffRegistry:    # A class to hold a dictionary of staff members.
-
-    def __init__(self):
-        self.__staff_members = {}
-
 class Staff(ABC):
 
     def __init__(self, name, id):
@@ -21,7 +16,10 @@ class Staff(ABC):
         self.__id = id
 
     def __str__(self):
-        return f"Staff name: {self.__name}, id: {self.__id}"
+        return(
+            f"Staff name: {self.__name}\n"
+            f"ID: {self.__id}\n"
+        )
 
     def get_name(self):
         return self.__name
@@ -38,3 +36,4 @@ class Zookeeper(Staff):
 
 class Administrator(Staff):
     pass
+
