@@ -1,11 +1,11 @@
-'''
+""""
 File: animal.py
 Description: This file contains the Animal class and relevant subclasses.
 Author: Zoe Kittel
 ID: 110484404
 Username: kitzy001
 This is my own work as defined by the University's Academic Integrity Policy.
-'''
+"""
 
 from abc import ABC, abstractmethod
 import random
