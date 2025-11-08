@@ -12,10 +12,11 @@ import random
 
 class Animal(ABC):
 
-    def __init__(self, name, species, age, diet=None, health=100, hunger=50):
+    def __init__(self, name, species, age, id=None, diet=None, health=100, hunger=50):
         self.__name = name
-        self.__age = age
         self.__species = species
+        self.__age = age
+        self.__id = id
         self.__diet = diet
         self.__health = health
         self.__hunger = hunger
@@ -24,12 +25,17 @@ class Animal(ABC):
         return(
             f"Name: {self.__name}\n"
             f"Age: {self.__age}\n"
+            f"ID: {self.__id if self.__id is not None else "Not registered yet"}\n"
             f"Diet: {self.__diet if self.__diet is not None else "Not yet set"}\n"
             f"Health status: {self.__health} ({self.get_health_string()})\n"
         )
 
     def get_name(self):
         return self.__name
+
+    def set_id(self, new_id):
+        if isinstance(new_id, str):
+            self.__id = new_id
 
     def get_health(self):
         return self.__health
@@ -78,8 +84,8 @@ class Animal(ABC):
 
 
 class Mammal(Animal):
-    def __init__(self, name, species, age, diet, health, hunger):
-        Animal.__init__(self, name, species, age, diet, health, hunger)
+    def __init__(self, name, species, age, id, diet, health, hunger):
+        Animal.__init__(self, name, species, age, id, diet, health, hunger)
 
     def cry(self):
         print("Mammal crying...")
@@ -102,8 +108,8 @@ class MarineAnimal(Animal):
 
 
 class BigCat(Mammal):
-    def __init__(self, name, species, age, diet=None, health=100, hunger=50, strength=25):
-        Mammal.__init__(self, name, species, age, diet=diet, health=health, hunger=hunger)
+    def __init__(self, name, species, age, id=None, diet=None, health=100, hunger=50, strength=25):
+        Mammal.__init__(self, name, species, age, id=id, diet=diet, health=health, hunger=hunger)
         self.__strength = strength
         self.__animals_attacked = [] # Save animals as an object to this set.
         self.__violence_rating = len(self.get_animals_attacked())
@@ -141,18 +147,3 @@ class Monkey(Mammal):
         print("Give orange me give eat orange me eat orange give me eat orange give me you.")
 
 
-
-lion = BigCat("Alex", "lion", 5)
-tiger = BigCat("Tori", "tiger", 5)
-monke = Monkey("Nim", "chimpanzee", 8)
-lion.set_diet("Raw meat")
-tiger.set_diet("Raw fish")
-monke.set_diet("Banana")
-print(lion)
-print(tiger)
-print(monke)
-
-
-lion.attack(monke)
-lion.attack(tiger)
-print(lion.get_violence_rating())

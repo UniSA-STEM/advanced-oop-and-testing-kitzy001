@@ -1,6 +1,6 @@
 """
 File: staff.py
-Description: This file contains the class Staff
+Description: This file contains the class Registry and it's child classes
 Author: Zoe Kittel
 ID: 110484404
 Username: kitzy001
@@ -8,38 +8,81 @@ This is my own work as defined by the University's Academic Integrity Policy.
 """
 from abc import ABC, abstractmethod
 from staff import Staff
+from animal import Animal, Mammal, Reptile, MarineAnimal, BigCat, Monkey
 import random
 
-class StaffRegistry:    # A class to hold a dictionary of staff members.
+class Registry(ABC):
 
-    def __init__(self):
-        self.__staff_members = {}
+    def __init__(self, registry_name):
+        self.__registry_name = registry_name
+        self._members = {}
 
-    def generate_next_id(self):    # To generate an employee ID based on existing ID sequence.
-        if len(self.__staff_members) == 0:
+    def __str__(self):
+        return(
+            f"Registry name: {self.__registry_name}\n"
+            f"Members of directory:\n"
+            f"{self.get_members_string()}\n"
+        )
+
+    def get_members_string(self):
+        if self._members:
+            return(
+                "------\n"
+                + "\n".join(str(member) for member in self._members.values())
+                + "------\n"
+            )
+        else:
+            return "No registered members"
+
+    def generate_next_id(self):    # To generate an ID based on existing ID sequence.
+        if len(self._members) == 0:
             return "001"
-        existing_ids = [int(id) for id in self.__staff_members.keys()]
+        existing_ids = [int(id) for id in self._members.keys()]
         new_id = max(existing_ids) + 1
         return "00" + str(new_id)
 
-    def add_new_staff(self, name, class_type=Staff):
+    @abstractmethod
+    def add_new(self):
+        pass
+
+
+class StaffRegistry(Registry):    # A class to hold a dictionary of staff members.
+
+    def __init__(self, registry_name):
+        super().__init__(registry_name)
+
+    def add_new(self, name, class_type=Staff):    # Instantiates a new staff member and adds to the directory.
         if isinstance(name, str):
             new_id = self.generate_next_id()
-            new_staff = class_type(name, new_id)
-            self.__staff_members[new_id] = new_staff # Add to dictionary
+            new_staff = class_type(name, "S-" + new_id)
+            self._members[new_id] = new_staff
             return new_staff
         else:
-            raise TypeError("Name must be a string")
-
-    def get_staff_list(self):
-        return list(self.__staff_members.values())
+            raise TypeError("Staff name must be a string")
 
 
-zoo = StaffRegistry()
-zoe = zoo.add_new_staff("Zoe")
-tom = zoo.add_new_staff("Tom")
-fred = zoo.add_new_staff("Fred")
+class AnimalRegistry(Registry):
+    def __init__(self, registry_name):
+        super().__init__(registry_name)
+
+    def add_new(self, animal):    # Adds a pre-established animal object to the directory.
+        if isinstance(animal, Animal):
+            new_id = self.generate_next_id()
+            animal.set_id("A-" + new_id)
+            self._members[new_id] = animal
+        else:
+            raise TypeError("Animal must be of object Animal.")
+
+
+
+staff = StaffRegistry("Zootopia - Staff")
+zoe = staff.add_new("Zoe")
+tom = staff.add_new("Tom")
 print(zoe)
-print(tom)
 
-print(fred)
+
+alex = BigCat("Alex", "lion", 6)
+animals = AnimalRegistry("Zootopia - Animals")
+animals.add_new(alex)
+print(animals)
+print(staff)
