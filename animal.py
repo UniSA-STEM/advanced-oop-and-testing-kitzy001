@@ -33,7 +33,7 @@ class Animal(ABC):
     def get_name(self):
         return self.__name
 
-    def set_id(self, new_id):
+    def set_id(self, new_id):    # Setter for animal ID, called when adding animal to registry
         if isinstance(new_id, str):
             self.__id = new_id
 
@@ -85,7 +85,17 @@ class Animal(ABC):
 
 class Mammal(Animal):
     def __init__(self, name, species, age, id, diet, health, hunger):
-        Animal.__init__(self, name, species, age, id, diet, health, hunger)
+        super().__init__(name, species, age, id, diet, health, hunger)
+        self.__habitat = None
+
+    def get_habitat(self):
+        return self.__habitat
+
+    def set_habitat(self, habitat):
+        if isinstance(habitat, str):
+            self.__habitat = habitat
+        else:
+            raise TypeError("Habitat must be of type string.")
 
     def cry(self):
         print("Mammal crying...")

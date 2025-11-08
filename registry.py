@@ -7,6 +7,8 @@ Username: kitzy001
 This is my own work as defined by the University's Academic Integrity Policy.
 """
 from abc import ABC, abstractmethod
+
+from enclosure import Enclosure
 from staff import Staff
 from animal import Animal, Mammal, Reptile, MarineAnimal, BigCat, Monkey
 import random
@@ -20,7 +22,7 @@ class Registry(ABC):
     def __str__(self):
         return(
             f"Registry name: {self.__registry_name}\n"
-            f"Members of directory:\n"
+            f"Items in directory:\n"
             f"{self.get_members_string()}\n"
         )
 
@@ -28,11 +30,11 @@ class Registry(ABC):
         if self._members:
             return(
                 "------\n"
-                + "\n".join(str(member) for member in self._members.values())
+                + "------\n".join(str(member) for member in self._members.values())
                 + "------\n"
             )
         else:
-            return "No registered members"
+            return "No registered items"
 
     def generate_next_id(self):    # To generate an ID based on existing ID sequence.
         if len(self._members) == 0:
@@ -74,15 +76,14 @@ class AnimalRegistry(Registry):
             raise TypeError("Animal must be of object Animal.")
 
 
+class EnclosureRegistry(Registry):
+    def __init__(self, registry_name):
+        super().__init__(registry_name)
 
-staff = StaffRegistry("Zootopia - Staff")
-zoe = staff.add_new("Zoe")
-tom = staff.add_new("Tom")
-print(zoe)
-
-
-alex = BigCat("Alex", "lion", 6)
-animals = AnimalRegistry("Zootopia - Animals")
-animals.add_new(alex)
-print(animals)
-print(staff)
+    def add_new(self, enclosure):
+        if isinstance(enclosure, Enclosure):
+            new_id = self.generate_next_id()
+            enclosure.set_id("E-" + new_id)
+            self._members[new_id] = enclosure
+        else:
+            raise TypeError("Enclosure must be of object Enclosure.")
