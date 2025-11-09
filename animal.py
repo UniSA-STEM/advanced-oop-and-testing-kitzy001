@@ -33,6 +33,9 @@ class Animal(ABC):
     def get_name(self):
         return self.__name
 
+    def get_id(self):
+        return self.__id
+
     def set_id(self, new_id):    # Setter for animal ID, called when adding animal to registry
         if isinstance(new_id, str):
             self.__id = new_id

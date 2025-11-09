@@ -8,8 +8,9 @@ This is my own work as defined by the University's Academic Integrity Policy.
 """
 
 from animal import Animal, Mammal, Reptile, MarineAnimal, BigCat, Monkey
+from abc import ABC, abstractmethod
 
-class Enclosure:
+class Enclosure(ABC):
 
     def __init__(self, name, capacity, id=None, is_full=False):
         self.__name = name
@@ -40,16 +41,33 @@ class Enclosure:
         return self.__animals
 
     def display_animals(self):
-        animal_str = ""  # String to display animals
+        animal_str = ""  # Create string to display animals
         animals = self.get_animals()
         for animal in animals:
             animal_str += "-----" + str(animal) + "\n"
-        if animal_str == "":
+        if animal_str == "":    # If no animals, set animal string to empty.
             animal_str = "Empty."
         return animal_str
 
-    def add_animal(self, animal):
+    @abstractmethod
+    def add_animal_to_enclosure(self, animal):
         pass
+
+    def search_for_animal(self, animal_id):
+        for animal in self.__animals:
+            if animal.id == animal_id:
+                return animal
+        return None
+
+    def remove_animal_from_enclosure(self, animal):
+        id = animal.get_id()
+        is_in_enclosure = self.search_for_animal(id)
+        if is_in_enclosure:
+            self.__animals.remove(animal)
+            print(f"Removed {animal.name} from {self.__name}.\n")
+        else:
+            print(f"The animal {animal.get_name()} is not in {self.__name}.\n")
+
 
 class Terrarium(Enclosure):    # To hold reptiles.
     def __init__(self, name, capacity, humidity, is_full=False):
@@ -64,18 +82,19 @@ class Terrarium(Enclosure):    # To hold reptiles.
         if isinstance(humidity, int) or isinstance(humidity, float):
             self.__humidity = humidity
 
-    def add_animal(self, animal):
+    def add_animal_to_enclosure(self, animal):
         if isinstance(animal, Reptile):
             self.__animals.append(animal)
             print(f"{animal.name} has been added to the enclosure: {self.__name}")
         else:
             raise TypeError("Animal must be of type Reptile.")
 
+
 class Savannah(Enclosure):    # To hold mammals.
     def __init__(self, name, capacity, is_full=False):
         super().__init__(name, capacity, is_full=is_full)
 
-    def add_animal(self, animal):
+    def add_animal_to_enclosure(self, animal):
         if isinstance(animal, Mammal):
             self.__animals.append(animal)
             print(f"{animal.name} has been added to the enclosure: {self.__name}")
@@ -87,7 +106,7 @@ class Australiana(Savannah):    # To hold Australian animals.
     def __init__(self, name, capacity, is_full=False):
         super().__init__(name, capacity, is_full=is_full)
 
-    def add_animal(self, animal):
+    def add_animal_to_enclosure(self, animal):
         if isinstance(animal, Mammal):
             self.__animals.append(animal)
             print(f"{animal.name} has been added to the enclosure: {self.__name}")
@@ -98,7 +117,7 @@ class African(Savannah):    # To hold African animals.
     def __init__(self, name, capacity, is_full=False):
         super().__init__(name, capacity, is_full=is_full)
 
-    def add_animal(self, animal):
+    def add_animal_to_enclosure(self, animal):
         if isinstance(animal, Mammal):
             self.__animals.append(animal)
             print(f"{animal.name} has been added to the enclosure: {self.__name}")
