@@ -30,17 +30,26 @@ class Animal(ABC):
             f"Health status: {self.__health} ({self.get_health_string()})\n"
         )
 
-    def get_name(self):
+    @property
+    def name(self):
         return self.__name
 
-    def get_id(self):
+    def set_name(self, name):    # Setter for animal name.
+        if isinstance(name, str):
+            self.__name = name
+        else:
+            raise TypeError("Name must be a string.")
+
+    @property
+    def id(self):
         return self.__id
 
     def set_id(self, new_id):    # Setter for animal ID, called when adding animal to registry
         if isinstance(new_id, str):
             self.__id = new_id
 
-    def get_health(self):
+    @property
+    def health(self):
         return self.__health
 
     def set_health(self, health):
