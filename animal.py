@@ -69,6 +69,9 @@ class Animal(ABC):
             health = "critical"
         return health
 
+    def get_health(self):
+        return self.__health
+
     def get_age(self):
         return self.__age
 
@@ -77,6 +80,12 @@ class Animal(ABC):
 
     def get_diet(self):
         return self.__diet
+
+    def get_hunger(self):
+        return self.__hunger
+
+    def set_hunger(self, value):    # Takes an integer and updates the value for hunger.
+        self.__hunger = max(0, min(self.__hunger + value, 100))    # Set to be minimum 0 or maximum 100 value.
 
     def set_diet(self, diet):
         if isinstance(diet, str):
@@ -134,10 +143,11 @@ class BigCat(Mammal):
         Mammal.__init__(self, name, species, age, id=id, diet=diet, health=health, hunger=hunger)
         self.__strength = strength
         self.__animals_attacked = [] # Save animals as an object to this set.
-        self.__violence_rating = len(self.get_animals_attacked())
+        self.__attack_count = len(self.get_animals_attacked())
 
-    def get_violence_rating(self):
-        return self.__violence_rating
+    @property
+    def attack_count(self):
+        return self.__attack_count
 
     def get_animals_attacked(self):
         return self.__animals_attacked

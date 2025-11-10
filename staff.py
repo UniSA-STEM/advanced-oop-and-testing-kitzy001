@@ -53,9 +53,9 @@ class Veterinarian(Staff):
         if isinstance (animal, Animal):
             print(f"{self.name} printing report...\n")
             if isinstance(animal, BigCat):
-                print(BigCatReport.print_report(animal))
+                print(BigCatReport.generate(animal))
             else:
-                print(HealthReport.print_report(animal))
+                print(HealthReport.generate(animal))
 
 
 class Zookeeper(Staff):
@@ -63,9 +63,20 @@ class Zookeeper(Staff):
     def __init__(self, name, id):
         super().__init__(name, id)
 
-    def clean_enclosure(self, enclosure):
+    def clean_enclosure(self, enclosure):    # Calls method which sets enclosure attribute is_clean to True.
         if isinstance(enclosure, Enclosure):
-            enclosure.clean_enclosure()
+            enclosure.set_is_clean()
+        else:
+            raise TypeError("Must be of the type Enclosure.")
+
+    def feed_animal(self, animal, value):
+        if isinstance(animal, Animal):
+            if isinstance(value, int):
+                animal.set_hunger(value)
+            else:
+                raise TypeError("Value must be an integer.")
+        else:
+            raise TypeError("Must be of the type Animal.")
 
 
 class Administrator(Staff):
