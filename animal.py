@@ -52,9 +52,11 @@ class Animal(ABC):
     def health(self):
         return self.__health
 
-    def set_health(self, health):
-        if isinstance(health, int) or isinstance(health, float):
-            self.__health += health
+    def set_health(self, value):
+        if isinstance(value, int) or isinstance(value, float):
+            self.__health = max(0, min(self.__health + value, 100))
+        else:
+            raise TypeError("Health must be numeric.")
 
     def get_health_string(self):
         if self.get_health() >= 95:

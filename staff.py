@@ -69,10 +69,11 @@ class Zookeeper(Staff):
         else:
             raise TypeError("Must be of the type Enclosure.")
 
-    def feed_animal(self, animal, value):
+    def feed_animal(self, animal, units):
         if isinstance(animal, Animal):
-            if isinstance(value, int):
-                animal.set_hunger(value)
+            if isinstance(units, int):
+                animal.set_hunger(units)
+                animal.set_health(units / 2)    # Increase animal health count by 1/2 units of food given.
             else:
                 raise TypeError("Value must be an integer.")
         else:
