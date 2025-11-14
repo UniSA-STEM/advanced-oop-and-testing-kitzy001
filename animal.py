@@ -12,14 +12,16 @@ import random
 
 class Animal(ABC):
 
-    def __init__(self, name, species, age, id=None, diet=None, health=100, hunger=50):
+    def __init__(self, name, species, age, id=None, diet=None):
         self.__name = name
         self.__species = species
         self.__age = age
         self.__id = id
         self.__diet = diet
-        self.__health = health
-        self.__hunger = hunger
+        self.__health = 100
+        self.__hunger = 100
+        self.__energy = 100
+        self.__aggression = 0
 
     def __str__(self):
         return(
@@ -60,16 +62,16 @@ class Animal(ABC):
 
     def get_health_string(self):
         if self.get_health() >= 95:
-            health = "excellent"
+            health_str = "excellent"
         elif self.get_health() >= 75:
-            health = "healthy"
+            health_str = "healthy"
         elif self.get_health() >= 50:
-            health = "average"
+            health_str = "average"
         elif self.get_health() >= 30:
-            health = "not great"
+            health_str = "not great"
         elif self.get_health() < 30:
-            health = "critical"
-        return health
+            health_str = "critical"
+        return health_str
 
     def get_health(self):
         return self.__health
@@ -79,9 +81,6 @@ class Animal(ABC):
 
     def get_species(self):
         return self.__species
-
-    def get_diet(self):
-        return self.__diet
 
     def get_hunger(self):
         return self.__hunger
@@ -95,15 +94,19 @@ class Animal(ABC):
         else:
             raise TypeError("Diet must be a string")
 
+    def eat(self, quantity):
+        if self.__diet is not None:
+            print(f"Eating {quantity} {self.__diet}...\n")
+        else:
+            print(f"No diet set for {self.__name}. Please set a diet.\n")
+
     @abstractmethod
     def cry(self):
         pass
 
-    def eat(self, quantity):
-        if self.__diet is not None:
-            print(f"Eating {quantity} {self.__diet}...")
-        else:
-            print(f"No food assigned to {self.__name}...")
+    def sleep(self):
+        energy_increase = 20
+        self.__energy = min(100, self.__energy + energy_increase) # Ensure value does not exceed 100.
 
 
 class Mammal(Animal):
