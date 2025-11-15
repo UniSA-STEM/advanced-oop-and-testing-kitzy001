@@ -1,25 +1,24 @@
 """
 File: staff.py
-Description: This file contains the class Staff
+Description: This file contains the class Staff for my zoo program.
 Author: Zoe Kittel
 ID: 110484404
 Username: kitzy001
 This is my own work as defined by the University's Academic Integrity Policy.
 """
 
-from animal import Animal, Mammal, Reptile, MarineAnimal, BigCat, Monkey
-from enclosure import Enclosure, Terrarium, Savannah, Australiana, African, Aquarium
-from registry import Registry, StaffRegistry, AnimalRegistry, EnclosureRegistry
+from animal import Animal, BigCat, Monkey
+from enclosure import Enclosure, Terrarium, Aquarium, Jungle
 from report import HealthReport, BigCatReport, MonkeyReport
 
 
 class Staff:
 
-    def __init__(self, name, id):
+    def __init__(self, name, staff_id):
         self.__name = name
-        self.__id = id
+        self.__id = staff_id
         self.__is_working = False
-        self.__can_handle_animal = False
+        self.__can_enrich_animal = False
         self.__is_on_leave = False
 
     def __str__(self):
@@ -37,12 +36,12 @@ class Staff:
         return self.__id
 
     @property
-    def can_handle_animal(self):
-        return self.__can_handle_animal
+    def can_enrich_animal(self):
+        return self.__can_enrich_animal
 
     def enrich_animal(self, animal):
         if isinstance(animal, Animal):
-            if self.can_handle_animal:
+            if self.can_enrich_animal:
                 happiness_increase = 10
                 animal.set_happiness(happiness_increase)
                 print(f"{self.name} enriched {animal.name}.")
@@ -62,8 +61,8 @@ class Staff:
 
 class Veterinarian(Staff):
 
-    def __init__(self, name, id, specialisation=None):
-        super().__init__(name, id)
+    def __init__(self, name, staff_id, specialisation=None):
+        super().__init__(name, staff_id)
         self.__specialisation = specialisation
         self.__can_handle_animal = True
 
@@ -94,8 +93,9 @@ class Veterinarian(Staff):
 
 class AnimalTrainer(Staff):
 
-    def __init__(self, name, id):
-        super().__init__(name, id)
+    def __init__(self, name, staff_id):
+        super().__init__(name, staff_id)
+        self.__can_enrich_animal = True
 
     def train_animal(self, animal):
         if isinstance(animal, Animal):
@@ -106,12 +106,13 @@ class AnimalTrainer(Staff):
 
 class Zookeeper(Staff):
 
-    def __init__(self, name, id):
-        super().__init__(name, id)
+    def __init__(self, name, staff_id):
+        super().__init__(name, staff_id)
+        self.__can_enrich_animal = True
 
     def clean_enclosure(self, enclosure):    # Calls method which sets enclosure attribute is_clean to True.
         if isinstance(enclosure, Enclosure):
-            enclosure.set_is_clean()
+            enclosure.set_is_clean(True)
             print(f"{self.name} has cleaned {enclosure.name}.")
         else:
             raise TypeError("Must be of the type Enclosure.")
@@ -134,6 +135,11 @@ class Zookeeper(Staff):
         else:
             raise TypeError("Must be of type Terrarium or Aquarium.")
 
+    def update_jungle_weather(self, enclosure, boolean):    # Updates weather status for enclosures of the type Jungle.
+        if isinstance(enclosure, Jungle):
+            enclosure.set_is_raining(boolean)
+            print(f"{self.name} has updated the weather status for {enclosure.name}.")
+
     def inspect_enclosure(self, enclosure):    # Checks if enclosure is set to clean, calls method to update animal health if False.
         if isinstance(enclosure, Enclosure):
             if enclosure.is_clean:
@@ -146,8 +152,10 @@ class Zookeeper(Staff):
 
 
 class Administrator(Staff):
-    def __init__(self, name, id):
-        super().__init__(name, id)
+
+    def __init__(self, name, staff_id):
+        super().__init__(name, staff_id)
+        self.__can_enrich_animal = False
 
     def generate_single_animal_report(self, animal):    # Takes an animal and generates a stats report.
         if isinstance(animal, Animal):
@@ -168,16 +176,19 @@ class Administrator(Staff):
             enclosure.display_animals()
 
     def generate_staff_report(self, registry):
+        from registry import StaffRegistry
         if isinstance(registry, StaffRegistry):
             print(f"{self.name} printing report...\n")
             print(registry, "\n")
 
     def generate_all_animals_report(self, registry):
+        from registry import AnimalRegistry
         if isinstance(registry, AnimalRegistry):
             print(f"{self.name} printing report...\n")
             print(registry, "\n")
 
     def generate_all_enclosure_report(self, registry):
+        from registry import EnclosureRegistry
         if isinstance(registry, EnclosureRegistry):
             print(f"{self.name} printing report...\n")
             print(registry, "\n")
@@ -203,7 +214,7 @@ class Administrator(Staff):
             print(f"Unable to move {animal.name} because they are sick.")
         else:    # If animal is not sick, remove them from existing enclosure and add them to new enclosure.
             current_enclosure.remove_animal(animal)
-            target_enclosure.add_animal(animal)
+            target_enclosure.add_animal_to_enclosure(animal)
             print(f"{self.name} successfully transferred {animal.name} to {current_enclosure.name}.")
 
 

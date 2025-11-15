@@ -60,8 +60,9 @@ class Enclosure(ABC):
         else:
             raise TypeError("Enclosure ID must be of type string.")
 
-    def set_is_clean(self):    # Sets attribute for is_clean to True.
-        self._is_clean = True
+    def set_is_clean(self, boolean):    # Sets attribute for is_clean to True.
+        if isinstance(boolean, bool):
+            self._is_clean = boolean
 
     def add_animal(self, animal):    # Validates there is capacity in enclosure and adds animal.
         if not self.is_full:
@@ -175,19 +176,6 @@ class Savannah(Enclosure):    # An enclosure to hold animals of the type Mammal.
                 print(f"{animal.name} has been added to the enclosure: {self._name}")
         else:
             raise TypeError("Animal must be of type Mammal.")
-
-
-class Australiana(Savannah):    # An enclosure to hold animals of the type Mammal.
-    def __init__(self, name, capacity):
-        super().__init__(name, capacity)
-
-    def add_animal_to_enclosure(self, animal):
-            if isinstance(animal, Mammal):
-                added = self.add_animal(animal)    # Call parent method to add to enclosure list.
-                if added:
-                    print(f"{animal.name} has been added to the enclosure: {self.name}")
-            else:
-                raise TypeError("Animal must be of type Mammal.")
 
 
 class African(Savannah):    # An enclosure to hold animals of the type BigCat.
