@@ -332,11 +332,19 @@ class Monkey(Mammal):
         print("Give orange me give eat orange me eat orange give me eat orange give me you.\n")
 
     def respond_to_zookeeper(self):    # Inherits method from parent class.
-        super().respond_to_zookeeper()
+        enclosure = self.get_enclosure()
+        if not enclosure.is_raining:
+            super().respond_to_zookeeper()
+        else:
+            print(f"{self.name} will not interact with zoo staff while it is raining.\n")
 
     def explore(self):
-        super().explore()
-        print(f"{self.name} swings from vine to vine!\n")
+        enclosure = self.get_enclosure()
+        if not enclosure.is_raining:
+            super().explore()
+            print(f"{self.name} swings from vine to vine!\n")
+        else:
+            print(f"{self.name} will not explore while it is raining.\n")
 
     def steal_visitors_hat(self):    # Updates value for happiness and aggression.
         self.__hats_stolen += 1

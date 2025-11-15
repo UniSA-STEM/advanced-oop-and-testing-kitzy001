@@ -118,6 +118,20 @@ class Enclosure(ABC):
 class Jungle(Enclosure):    # An enclosure to hold animals of the type Monkey.
     def __init__(self, name, capacity):
         super().__init__(name, capacity)
+        self.__is_raining = False
+
+    def __str__(self):
+        new_str = super().__str__() + "\n"
+        new_str += f"Is currently raining: {self.is_raining}.\n"
+        return new_str
+
+    @property
+    def is_raining(self):
+        return self.__is_raining
+
+    def set_is_raining(self, boolean):
+        if isinstance(boolean, bool):
+            self.__is_raining = boolean
 
     def add_animal_to_enclosure(self, animal):
         if isinstance(animal, Monkey):
