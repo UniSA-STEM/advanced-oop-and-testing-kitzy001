@@ -8,6 +8,7 @@ This is my own work as defined by the University's Academic Integrity Policy.
 """
 
 from abc import ABC, abstractmethod
+from enclosure import Enclosure
 import random
 
 class Animal(ABC):
@@ -88,7 +89,7 @@ class Animal(ABC):
         return self.__enclosure
 
     def set_enclosure(self, enclosure):
-        if isinstance(enclosure, str):
+        if isinstance(enclosure, Enclosure):
             self.__enclosure = enclosure
 
     def set_name(self, name):    # Setter for animal name.
@@ -157,9 +158,11 @@ class Animal(ABC):
         energy_spent = -20
         happiness_gained = 20
         aggression_decrease = 20
+        hunger_change = -20
         self.set_energy(energy_spent)
         self.set_happiness(happiness_gained)
         self.set_aggression(aggression_decrease)
+        self.set_hunger(hunger_change)
 
 
 class Mammal(Animal):
@@ -212,7 +215,9 @@ class Reptile(Animal):
 
     def bathe_in_sun(self):
         happiness_gained = 20
+        aggression_decrease = -20
         self.set_happiness(happiness_gained)
+        self.set_aggression(aggression_decrease)
 
     def explore(self):
         super().explore()
