@@ -1,6 +1,6 @@
 """
 File: staff.py
-Description: This file contains the class Registry and it's child classes
+Description: This file contains the class Registry, and it's child classes
 Author: Zoe Kittel
 ID: 110484404
 Username: kitzy001
@@ -9,9 +9,8 @@ This is my own work as defined by the University's Academic Integrity Policy.
 from abc import ABC, abstractmethod
 
 from enclosure import Enclosure
-from staff import Staff
+from staff import Staff, Veterinarian, Zookeeper, AnimalTrainer
 from animal import Animal, Mammal, Reptile, MarineAnimal, BigCat, Monkey
-import random
 
 class Registry(ABC):
 
@@ -43,8 +42,14 @@ class Registry(ABC):
         new_id = max(existing_ids) + 1
         return "00" + str(new_id)
 
+    def search_for_item(self, id):
+        for member in self._members.values():
+            if member.id == id:
+                return member
+        return None
+
     @abstractmethod
-    def add_new(self):
+    def add_new(self, name):
         pass
 
 
@@ -67,11 +72,11 @@ class AnimalRegistry(Registry):
     def __init__(self, registry_name):
         super().__init__(registry_name)
 
-    def add_new(self, animal):    # Adds a pre-established animal object to the directory.
-        if isinstance(animal, Animal):
+    def add_new(self, name):    # Adds a pre-established animal object to the directory.
+        if isinstance(name, Animal):
             new_id = self.generate_next_id()
-            animal.set_id("A-" + new_id)
-            self._members[new_id] = animal
+            name.set_id("A-" + new_id)
+            self._members[new_id] = name
         else:
             raise TypeError("Animal must be of object Animal.")
 

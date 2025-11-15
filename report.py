@@ -6,8 +6,8 @@ ID: 110484404
 Username: kitzy001
 This is my own work as defined by the University's Academic Integrity Policy.
 """
-import animal
-from animal import Animal, BigCat
+
+from animal import Animal, BigCat, Monkey
 
 class HealthReport:
 
@@ -19,13 +19,14 @@ class HealthReport:
                 f"Age: {animal.age}\n"
                 f"Species: {animal.species}\n"
                 f"Hunger: {animal.hunger}\n"
-                f"Health status: {animal.health} ({animal.get_health_string()})\n"
+                f"Health status: {animal.health} ({animal.check_health()})\n"
                 f"Aggression level: {animal.aggression}\n"
                 f"Happiness level: {animal.happiness}\n"
                 f"Energy level: {animal.energy}\n"
             )
         else:
             return()
+
 
 class BigCatReport(HealthReport):
 

@@ -30,6 +30,18 @@ class Enclosure(ABC):
             f"Is currently clean: {self._is_clean}\n"
         )
 
+    @abstractmethod
+    def add_animal_to_enclosure(self, animal):
+        pass
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def is_clean(self):
+        return self._is_clean
+
     def set_id(self, id):    # Setter for enclosure ID, called when adding enclosure to registry.
         if isinstance(id, str):
             self._id = id
@@ -43,6 +55,7 @@ class Enclosure(ABC):
         if self._is_full == False:
             if animal.id is not None:
                 self._animals.append(animal)
+                animal.set_enclosure(self)
                 self._is_clean = False
                 if len(self._animals) == self._capacity:
                     self._is_full = True
@@ -51,10 +64,6 @@ class Enclosure(ABC):
                 raise UnregisteredAnimal(animal.name)
         else:
             raise ValueError("Enclosure is already at capacity.")
-
-    @abstractmethod
-    def add_animal_to_enclosure(self, animal):
-        pass
 
     def search_for_animal(self, animal_id):    # Returns animal if animal found in enclosure list.
         for animal in self._animals:
@@ -82,8 +91,13 @@ class Enclosure(ABC):
             animal_str = "Empty."
         print(animal_str)
 
+    def decrease_animals_health(self):    # Decreases the health value for all animals in the enclosure.
+        for animal in self._animals:
+            health_update = -10
+            animal.set_health(health_update)
 
-class ControlledEnclosure(Enclosure):    # An enclosure that can have its temperature controlled..
+
+class ControlledEnclosure(Enclosure):    # An enclosure that can have its temperature controlled.
     def __init__(self, name, capacity, temperature, is_full=False):
         super().__init__(name, capacity, id=None, is_full=is_full)
         self.__temperature = temperature
@@ -93,15 +107,19 @@ class ControlledEnclosure(Enclosure):    # An enclosure that can have its temper
         new_str += f"Temperature: {self.__temperature}\n"
         return new_str
 
-    def get_temperature(self):
+    @property
+    def temperature(self):
         return self.__temperature
 
     def set_temperature(self, temperature):    # Setter for temperature.
         if isinstance(temperature, int) or isinstance(temperature, float):
             self.__temperature = temperature
 
+    def add_animal_to_enclosure(self, animal):
+        pass
 
-class Savannah(Enclosure):    # To hold mammals.
+
+class Savannah(Enclosure):    # Class to hold mammals.
     def __init__(self, name, capacity, is_full=False):
         super().__init__(name, capacity, id=None, is_full=is_full)
 
@@ -114,7 +132,7 @@ class Savannah(Enclosure):    # To hold mammals.
             raise TypeError("Animal must be of type Mammal.")
 
 
-class Australiana(Savannah):    # To hold Australian animals.
+class Australiana(Savannah):    # Class to hold Australian animals.
     def __init__(self, name, capacity, is_full=False):
         super().__init__(name, capacity, is_full=is_full)
 
@@ -127,7 +145,7 @@ class Australiana(Savannah):    # To hold Australian animals.
                 raise TypeError("Animal must be of type Mammal.")
 
 
-class African(Savannah):    # To hold African animals.
+class African(Savannah):    # Class to hold African animals.
     def __init__(self, name, capacity, is_full=False):
         super().__init__(name, capacity, is_full=is_full)
 
@@ -140,7 +158,7 @@ class African(Savannah):    # To hold African animals.
             raise TypeError("Animal must be of type Mammal.")
 
 
-class Terrarium(ControlledEnclosure):
+class Terrarium(ControlledEnclosure):    # Class to hold reptiles.
     def __init__(self, name, capacity, temperature=20, is_full=False):
         super().__init__(name, capacity, temperature, is_full=is_full)
 
@@ -153,7 +171,7 @@ class Terrarium(ControlledEnclosure):
             raise TypeError("Animal must be of type Reptile.")
 
 
-class Aquarium(ControlledEnclosure):    # To hold marine animals.
+class Aquarium(ControlledEnclosure):    # Class to hold marine animals.
     def __init__(self, name, capacity, temperature=27, is_full=False):
         super().__init__(name, capacity, temperature, is_full=is_full)
 

@@ -25,6 +25,7 @@ class Animal(ABC):
         self.__energy = 100
         self.__aggression = 0
         self.__happiness = 50
+        self.__is_sick = False
 
 
     def __str__(self):
@@ -33,7 +34,7 @@ class Animal(ABC):
             f"Age: {self.age}\n"
             f"ID: {self.id if self.id is not None else "Not registered yet"}\n"
             f"Diet: {self.__diet if self.__diet is not None else "Not yet set"}\n"
-            f"Health status: {self.health} ({self.get_health_string()})\n"
+            f"Health status: {self.health} ({self.check_health()})\n"
             f"Enclosure: {self.__enclosure}\n"
         )
 
@@ -82,6 +83,10 @@ class Animal(ABC):
         return self.__species
 
     @property
+    def is_sick(self):
+        return self.__is_sick
+
+    @property
     def diet(self):
         return self.__diet
 
@@ -92,23 +97,11 @@ class Animal(ABC):
         if isinstance(enclosure, Enclosure):
             self.__enclosure = enclosure
 
-    def set_name(self, name):    # Setter for animal name.
-        if isinstance(name, str):
-            self.__name = name
-        else:
-            raise TypeError("Name must be a string.")
-
     def set_id(self, new_id):    # Setter for animal ID, called when adding animal to registry.
         if isinstance(new_id, str):
             self.__id = new_id
 
-    def set_health(self, value):    # Setter for animal health.
-        if isinstance(value, int) or isinstance(value, float):
-            self.__health = max(0, min(self.__health + value, 100))    # Ensure value does not exceed 100.
-        else:
-            raise TypeError("Health must be numeric.")
-
-    def get_health_string(self):    # Returns a string describing animal health.
+    def check_health(self):    # Returns a string describing animal health.
         if self.health >= 95:
             health_str = "excellent"
         elif self.health >= 75:
@@ -117,9 +110,15 @@ class Animal(ABC):
             health_str = "average"
         elif self.health >= 25:
             health_str = "unhealthy"
+            self.__is_sick = True
         else:
             health_str = "critical"
+            self.__is_sick = True
         return health_str
+
+    def set_health(self, value):    # Takes an integer and updates the value for health.
+        if isinstance(value, int):
+            self.__health = max(0, min(self.__health + value, 100))    # Ensure value does not exceed 100.
 
     def set_hunger(self, value):    # Takes an integer and updates the value for hunger.
         if isinstance(value, int):
@@ -152,23 +151,27 @@ class Animal(ABC):
 
     def sleep(self):
         energy_increase = 50
+        health_increase = 10
         self.set_energy(energy_increase)
+        self.set_health(health_increase)
 
     def explore(self):
         energy_spent = -20
         happiness_gained = 20
         aggression_decrease = 20
         hunger_change = -20
+        health_change = -15
         self.set_energy(energy_spent)
         self.set_happiness(happiness_gained)
         self.set_aggression(aggression_decrease)
         self.set_hunger(hunger_change)
+        self.set_health(health_change)
 
 
 class Mammal(Animal):
-    def __init__(self, name, species, age, diet=None):
+    def __init__(self, name, species, age, diet=None, habitat=None):
         super().__init__(name, species, age, diet)
-        self.__habitat = None
+        self.__habitat = habitat
 
     @property
     def habitat(self):
@@ -316,6 +319,14 @@ class Monkey(Mammal):
         Mammal.__init__(self, name, species, age, diet)
         self.__hats_stolen = 0
         self.__bananas_thrown = 0
+
+    @property
+    def bananas_thrown(self):
+        return self.__bananas_thrown
+
+    @property
+    def hats_stolen(self):
+        return self.__hats_stolen
 
     def cry(self):
         print("Give orange me give eat orange me eat orange give me eat orange give me you.\n")
