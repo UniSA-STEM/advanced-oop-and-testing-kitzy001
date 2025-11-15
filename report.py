@@ -12,7 +12,14 @@ from animal import Animal, BigCat, Monkey
 class HealthReport:
 
     @staticmethod
-    def generate(animal):    # This method returns a string containing animal health details.
+    def generate(animal):
+        """"
+        This static method takes an animal and returns a clean string describing the
+        animals health status. Validates the animal is of the type Animal.
+
+        Parameters:
+            animal(Animal): Animal of the type Animal.
+        """
         if isinstance(animal, Animal):
             return(
                 f"*** Health report for {animal.name} ***\n"
@@ -31,7 +38,14 @@ class HealthReport:
 class BigCatReport(HealthReport):
 
     @staticmethod
-    def generate(animal):    # This method calls the parent method and adds a string specific to the object type.
+    def generate(animal):
+        """"
+        This method adds additional notes to the parent class, when an animal of the type
+        BigCat is passed through.
+
+        Parameters:
+            animal(BigCat): Animal of the type BigCat
+        """
         if isinstance(animal, BigCat):
             report_str = HealthReport.generate(animal)
             report_str += (
@@ -47,6 +61,13 @@ class MonkeyReport(HealthReport):
 
     @staticmethod
     def generate(animal):
+        """"
+        This method adds additional notes to the parent class, when an animal of the type
+        Monkey is passed through.
+
+        Parameters:
+            animal(Monkey): Animal of the type Monkey
+        """
         if isinstance(animal, Monkey):
             report_str = HealthReport.generate(animal)
             report_str += (
