@@ -12,14 +12,22 @@ from enclosure import Enclosure
 from animal import Animal
 from staff import Staff
 
-
 class Registry(ABC):
 
     def __init__(self, registry_name):
+        """"
+        Initialises an instance of the Registry class.
+
+        Parameters:
+            registry_name (str): The name of the registry.
+        """
         self.__registry_name = registry_name
         self._members = {}
 
     def __str__(self):
+        """"
+        Returns a string representation of the registry.
+        """
         return(
             f"Registry name: {self.__registry_name}\n"
             f"Items in directory:\n"
@@ -31,6 +39,9 @@ class Registry(ABC):
         return self._members
 
     def get_members_string(self):
+        """"
+        Returns a string displaying all the members of the registry.
+        """
         if self._members:
             return(
                 "------\n"
@@ -40,7 +51,10 @@ class Registry(ABC):
         else:
             return "No registered items"
 
-    def generate_next_id(self):    # To generate an ID based on existing ID sequence.
+    def generate_next_id(self):
+        """
+        This method generates an ID, using the members set{} to generate the next ID in the sequence.
+        """
         if len(self._members) == 0:
             return "001"
         existing_ids = [int(iden) for iden in self._members.keys()]
@@ -48,6 +62,10 @@ class Registry(ABC):
         return "00" + str(new_id)
 
     def search_for_item(self, iden):
+        """
+        This method takes an ID and searches to see if the ID exists in the registry.
+        Returns the member if found, None otherwise.
+        """
         for member in self._members.values():
             if member.id == iden:
                 return member
@@ -58,12 +76,18 @@ class Registry(ABC):
         pass
 
 
-class StaffRegistry(Registry):    # A class to hold a dictionary of staff members.
+class StaffRegistry(Registry):
 
     def __init__(self, registry_name):
         super().__init__(registry_name)
 
-    def add_new(self, name, class_type=Staff):    # Instantiates a new staff member and adds to the directory.
+    def add_new(self, name, class_type=Staff):
+        """
+        Instantiates a new instance of the Staff class and adds it to the registry.
+        Parameters:
+            name (str): The name of the staff member.
+            class_type(type): The class type of the staff member e.g. Veterinarian.
+        """
         if isinstance(name, str):
             new_id = self.generate_next_id()
             new_staff = class_type(name, "S-" + new_id)
@@ -75,12 +99,17 @@ class StaffRegistry(Registry):    # A class to hold a dictionary of staff member
 
 class AnimalRegistry(Registry):
 
-    from animal import Animal, Mammal, Reptile, MarineAnimal, BigCat, Monkey
-
     def __init__(self, registry_name):
         super().__init__(registry_name)
 
-    def add_new(self, name):    # Adds a pre-established animal object to the directory.
+    def add_new(self, name):
+        """
+        Takes an already initialised animal and adds it to the registry, generating an ID
+        and updating the animal attribute for ID.
+
+        Parameters:
+            name (str): The animal to add to the registry.
+        """
         if isinstance(name, Animal):
             new_id = self.generate_next_id()
             name.set_id("A-" + new_id)
@@ -95,6 +124,13 @@ class EnclosureRegistry(Registry):
         super().__init__(registry_name)
 
     def add_new(self, enclosure):
+        """
+        Takes an already initialised enclosure and adds it to the registry, generating an ID
+        and updating the enclosure attribute for ID.
+
+        Parameters:
+            enclosure(str): The enclosure to add to the registry.
+        """
         if isinstance(enclosure, Enclosure):
             new_id = self.generate_next_id()
             enclosure.set_id("E-" + new_id)
