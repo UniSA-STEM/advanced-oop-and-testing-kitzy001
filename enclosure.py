@@ -13,21 +13,21 @@ from exceptions import UnregisteredAnimal
 
 class Enclosure(ABC):
 
-    def __init__(self, name, capacity, id=None, is_full=False):
+    def __init__(self, name, capacity):
         self._name = name
         self._capacity = capacity
-        self._id = id
-        self._is_full = is_full
+        self._id = None
+        self._is_full = False
         self._animals = []
         self._is_clean = True
 
     def __str__(self):    # Returns a string of enclosure details.
         return(
-            f"Enclosure name: {self._name}\n"
-            f"Enclosure ID: {self._id}\n"
-            f"Enclosure capacity: {self._capacity}\n"
+            f"Enclosure name: {self.name}\n"
+            f"Enclosure ID: {self.id}\n"
+            f"Enclosure capacity: {self.capacity}\n"
             f"Number of animals held: {len(self._animals)}\n"
-            f"Is currently clean: {self._is_clean}\n"
+            f"Is currently clean: {self.is_clean}\n"
         )
 
     @abstractmethod
@@ -39,12 +39,24 @@ class Enclosure(ABC):
         return self._name
 
     @property
+    def id(self):
+        return self._id
+
+    @property
+    def capacity(self):
+        return self._capacity
+
+    @property
     def is_clean(self):
         return self._is_clean
 
-    def set_id(self, id):    # Setter for enclosure ID, called when adding enclosure to registry.
-        if isinstance(id, str):
-            self._id = id
+    @property
+    def is_full(self):
+        return self._is_full
+
+    def set_id(self, enclosure_id):    # Setter for enclosure ID, called when adding enclosure to registry.
+        if isinstance(enclosure_id, str):
+            self._id = enclosure_id
         else:
             raise TypeError("Enclosure ID must be of type string.")
 
@@ -52,7 +64,7 @@ class Enclosure(ABC):
         self._is_clean = True
 
     def add_animal(self, animal):    # Validates there is capacity in enclosure and adds animal.
-        if self._is_full == False:
+        if not self.is_full:
             if animal.id is not None:
                 self._animals.append(animal)
                 animal.set_enclosure(self)
@@ -72,15 +84,15 @@ class Enclosure(ABC):
         return None
 
     def remove_animal(self, animal):    # Removes animal if found in enclosure list.
-        id = animal.get_id()
-        is_in_enclosure = self.search_for_animal(id)
+        animal_id = animal.get_id()
+        is_in_enclosure = self.search_for_animal(animal_id)
         if is_in_enclosure:
             self._animals.remove(animal)
             print(f"Removed {animal.name} from {self._name}.\n")
             if len(self._animals) < self._capacity:    # Check for enclosure capacity after removal.
                 self._is_full = False
         else:
-            print(f"The animal {animal.get_name()} is not in {self._name}.\n")
+            print(f"The animal {animal.name} is not in {self._name}.\n")
 
     def display_animals(self):    # Prints a string which displays animals in enclosure.
         animal_str = ""
@@ -96,15 +108,34 @@ class Enclosure(ABC):
             health_update = -10
             animal.set_health(health_update)
 
+    def check_for_contamination(self):    # Checks animals in enclosure list to see if they are sick.
+        if any(animal.is_sick for animal in self._animals):
+            animal_decrease = -10
+            for animal in self._animals:
+                animal.set_health(animal_decrease)    # Calls method to decrease health for all animals in enclosure.
+
+
+class Jungle(Enclosure):    # An enclosure to hold animals of the type Monkey.
+    def __init__(self, name, capacity):
+        super().__init__(name, capacity)
+
+    def add_animal_to_enclosure(self, animal):
+        if isinstance(animal, Monkey):
+            added = self.add_animal(animal)  # Call parent method to add to enclosure list.
+            if added:
+                print(f"{animal.name} has been added to the enclosure: {self.name}")
+        else:
+            raise TypeError("Animal must be of type Monkey.")
+
 
 class ControlledEnclosure(Enclosure):    # An enclosure that can have its temperature controlled.
-    def __init__(self, name, capacity, temperature, is_full=False):
-        super().__init__(name, capacity, id=None, is_full=is_full)
+    def __init__(self, name, capacity, temperature=20):
+        super().__init__(name, capacity)
         self.__temperature = temperature
 
     def __str__(self):
         new_str = super().__str__() + "\n"
-        new_str += f"Temperature: {self.__temperature}\n"
+        new_str += f"Temperature: {self.temperature} degrees Celsius\n"
         return new_str
 
     @property
@@ -119,9 +150,9 @@ class ControlledEnclosure(Enclosure):    # An enclosure that can have its temper
         pass
 
 
-class Savannah(Enclosure):    # Class to hold mammals.
-    def __init__(self, name, capacity, is_full=False):
-        super().__init__(name, capacity, id=None, is_full=is_full)
+class Savannah(Enclosure):    # An enclosure to hold animals of the type Mammal.
+    def __init__(self, name, capacity):
+        super().__init__(name, capacity)
 
     def add_animal_to_enclosure(self, animal):
         if isinstance(animal, Mammal):
@@ -132,54 +163,54 @@ class Savannah(Enclosure):    # Class to hold mammals.
             raise TypeError("Animal must be of type Mammal.")
 
 
-class Australiana(Savannah):    # Class to hold Australian animals.
-    def __init__(self, name, capacity, is_full=False):
-        super().__init__(name, capacity, is_full=is_full)
+class Australiana(Savannah):    # An enclosure to hold animals of the type Mammal.
+    def __init__(self, name, capacity):
+        super().__init__(name, capacity)
 
     def add_animal_to_enclosure(self, animal):
             if isinstance(animal, Mammal):
                 added = self.add_animal(animal)    # Call parent method to add to enclosure list.
                 if added:
-                    print(f"{animal.name} has been added to the enclosure: {self._name}")
+                    print(f"{animal.name} has been added to the enclosure: {self.name}")
             else:
                 raise TypeError("Animal must be of type Mammal.")
 
 
-class African(Savannah):    # Class to hold African animals.
-    def __init__(self, name, capacity, is_full=False):
-        super().__init__(name, capacity, is_full=is_full)
+class African(Savannah):    # An enclosure to hold animals of the type BigCat.
+    def __init__(self, name, capacity):
+        super().__init__(name, capacity)
 
     def add_animal_to_enclosure(self, animal):
-        if isinstance(animal, Mammal):
+        if isinstance(animal, BigCat):
             added = self.add_animal(animal)    # Call parent method to add to enclosure list.
             if added:
-                print(f"{animal.name} has been added to the enclosure: {self._name}")
+                print(f"{animal.name} has been added to the enclosure: {self.name}")
         else:
-            raise TypeError("Animal must be of type Mammal.")
+            raise TypeError("Animal must be of type Big Cat.")
 
 
-class Terrarium(ControlledEnclosure):    # Class to hold reptiles.
-    def __init__(self, name, capacity, temperature=20, is_full=False):
-        super().__init__(name, capacity, temperature, is_full=is_full)
+class Terrarium(ControlledEnclosure):    # An enclosure to hold animals of the type Reptile.
+    def __init__(self, name, capacity, temperature=20):
+        super().__init__(name, capacity, temperature)
 
     def add_animal_to_enclosure(self, animal):
         if isinstance(animal, Reptile):
             added = self.add_animal(animal)    # Call parent method to add to enclosure list.
             if added:
-                print(f"{animal.name} has been added to the enclosure: {self._name}")
+                print(f"{animal.name} has been added to the enclosure: {self.name}")
         else:
             raise TypeError("Animal must be of type Reptile.")
 
 
-class Aquarium(ControlledEnclosure):    # Class to hold marine animals.
-    def __init__(self, name, capacity, temperature=27, is_full=False):
-        super().__init__(name, capacity, temperature, is_full=is_full)
+class Aquarium(ControlledEnclosure):    # An enclosure to hold animals of the type MarineAnimal.
+    def __init__(self, name, capacity, temperature=27):
+        super().__init__(name, capacity, temperature)
 
     def add_animal_to_enclosure(self, animal):
         if isinstance(animal, MarineAnimal):
             added = self.add_animal(animal)    # Call parent method to add to enclosure list.
             if added:
-                print(f"{animal.name} has been added to the enclosure: {self._name}")
+                print(f"{animal.name} has been added to the enclosure: {self.name}")
         else:
             raise TypeError("Animal must be of type MarineAnimal.")
 
