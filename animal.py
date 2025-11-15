@@ -12,11 +12,11 @@ import random
 
 class Animal(ABC):
 
-    def __init__(self, name, species, age, id=None, diet=None):
+    def __init__(self, name, species, age, diet=None):
         self.__name = name
         self.__species = species
         self.__age = age
-        self.__id = id
+        self.__id = None
         self.__diet = diet
         self.__enclosure = None
         self.__health = 100
@@ -118,9 +118,9 @@ class Animal(ABC):
             health_str = "healthy"
         elif self.health >= 50:
             health_str = "average"
-        elif self.health >= 30:
-            health_str = "not great"
-        elif self.health < 30:
+        elif self.health >= 25:
+            health_str = "unhealthy"
+        else:
             health_str = "critical"
         return health_str
 
@@ -159,8 +159,8 @@ class Animal(ABC):
 
 
 class Mammal(Animal):
-    def __init__(self, name, species, age, id=None, diet=None):
-        super().__init__(name, species, age, id, diet)
+    def __init__(self, name, species, age, diet=None):
+        super().__init__(name, species, age, diet)
         self.__habitat = None
 
     @property
@@ -181,14 +181,14 @@ class Mammal(Animal):
             happiness_gained = 20
         elif self.aggression <= 50:
             happiness_gained = 5
-        elif self.aggression <= 100:
+        else:
             happiness_gained = - 20
         self.set_happiness(happiness_gained)
 
 
 class Reptile(Animal):
-    def __init__(self, name, species, age, id=None, diet=None):
-        Animal.__init__(self, name, species, age, id, diet)
+    def __init__(self, name, species, age, diet=None):
+        Animal.__init__(self, name, species, age, diet)
         self.__egg_count = 0
 
     def cry(self):
@@ -199,7 +199,7 @@ class Reptile(Animal):
             happiness_gained = 50
         elif self.aggression <= 50:
             happiness_gained = 10
-        elif self.aggression <= 100:
+        else:
             happiness_gained = - 40
         self.set_happiness(happiness_gained)
 
@@ -212,8 +212,8 @@ class Reptile(Animal):
 
 
 class MarineAnimal(Animal):
-    def __init__(self, name, species, age, id=None, diet=None):
-        Animal.__init__(self, name, species, age, id, diet)
+    def __init__(self, name, species, age, diet=None):
+        Animal.__init__(self, name, species, age, diet)
 
     def cry(self):
         print("Underwater noises....")
@@ -223,24 +223,35 @@ class MarineAnimal(Animal):
             happiness_gained = 10
         elif self.aggression <= 50:
             happiness_gained = 0
-        elif self.aggression <= 100:
-            happiness_gained = - 50
+        else:
+            happiness_gained = -50
         self.set_happiness(happiness_gained)
 
     def swim(self):
-        self.
+        happiness_gained = 30
+        energy_spent = -30
+        self.set_happiness(happiness_gained)
+        self.set_energy(energy_spent)
 
 
 class BigCat(Mammal):
-    def __init__(self, name, species, age, id=None, diet=None, health=100, hunger=50, strength=25):
-        Mammal.__init__(self, name, species, age, id=id, diet=diet, health=health, hunger=hunger)
-        self.__strength = strength
+    def __init__(self, name, species, age, diet=None):
+        Mammal.__init__(self, name, species, age, diet)
+        self.__strength = 50    # Set starting strength to 50.
         self.__animals_attacked = []    # Save animals as an object to a list.
         self.__attack_count = len(self.get_animals_attacked())
 
     @property
     def attack_count(self):
         return self.__attack_count
+
+    @property
+    def strength(self):
+        return self.__strength
+
+    def set_strength (self, value):  # Takes an integer and updates the value for strength.
+        if isinstance(value, int):
+            self.__strength = max(0, min(self.__strength + value, 100))  # Ensure value is between 0-100.
 
     def get_animals_attacked(self):    # Returns a list of the animals attacked.
         return self.__animals_attacked
@@ -257,7 +268,7 @@ class BigCat(Mammal):
             self.__animals_attacked.append(opponent)
             print(self.__animals_attacked)
         else:
-            print(f"{self.get_name()} cannot attack {opponent.get_name()} as they are a {opponent.get_species()}.")
+            print(f"{self.name} cannot attack {opponent.name} as they are a {opponent.species}.")
 
     def get_damage(self):    # Generates a random value and calculates damage based on strength rating.
         roll = random.random()
@@ -267,23 +278,47 @@ class BigCat(Mammal):
     def respond_to_zookeeper(self):
         super().respond_to_zookeeper()
 
+    def provoke_visitor(self):    # Decreases energy and increases aggression level.
+        energy_spent = -20
+        aggression_gained = 20
+        self.set_aggression(aggression_gained)
+        self.set_energy(energy_spent)
+        print(f"{self.name} has provoked a visitor at the zoo!\n")
+
+    def eat(self, quantity):
+        super().eat(quantity)    # Call parent method to update hunger level.
+        strength_gained = 10
+        self.set_strength(strength_gained)    # Call set_strength to increase strength level.
+
 
 class Monkey(Mammal):
-    def __init__(self, name, species, age, diet=None, health=100, hunger=50):
-        Mammal.__init__(self, name, species, age, diet=diet, health=health, hunger=hunger)
+    def __init__(self, name, species, age, diet=None):
+        Mammal.__init__(self, name, species, age, diet)
+        self.__hats_stolen = 0
+        self.__bananas_thrown = 0
 
     def cry(self):
-        print("Give orange me give eat orange me eat orange give me eat orange give me you.")
+        print("Give orange me give eat orange me eat orange give me eat orange give me you.\n")
 
     def respond_to_zookeeper(self):    # Inherits method from parent class.
         super().respond_to_zookeeper()
 
-    def steal_visitors_hat(self):    # Increases value for happiness and aggression.
+    def steal_visitors_hat(self):    # Updates value for happiness and aggression.
+        self.__hats_stolen += 1
         happiness_gained = 25
         aggression_gained = 25
         self.set_happiness(happiness_gained)
         self.set_aggression(aggression_gained)
-        print(f"{self.name} has stolen a visitors hat!")
+        print(f"{self.name} has stolen a visitors hat!\n")
+
+    def throw_banana(self):    # Updates value for aggression and energy.
+        self.__bananas_thrown += 1
+        aggression_gained = 10
+        energy_spent = -10
+        self.set_happiness(aggression_gained)
+        self.set_energy(energy_spent)
+        print(f"{self.name} has thrown a banana at a visitor!\n")
+
 
 
 
