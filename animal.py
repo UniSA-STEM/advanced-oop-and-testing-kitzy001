@@ -37,6 +37,9 @@ class Animal(ABC):
 
 
     def __str__(self):
+        """"
+        This method returns a descriptive string representation of the animal.
+        """
         return(
             f"Name: {self.name}\n"
             f"Age: {self.age}\n"
@@ -111,10 +114,14 @@ class Animal(ABC):
         from enclosure import Enclosure
         if isinstance(enclosure, Enclosure):
             self.__enclosure = enclosure
+        else:
+            raise TypeError("Enclosure must be of type Enclosure.")
 
     def set_id(self, new_id):    # Setter for animal ID, called when adding animal to registry.
         if isinstance(new_id, str):
             self.__id = new_id
+        else:
+            raise TypeError("ID must be of type string.")
 
     def check_health(self):
         """
@@ -146,6 +153,8 @@ class Animal(ABC):
         if isinstance(value, int):
             new_health = self.__health + value
             self.__health = max(0, min(new_health, 100))
+        else:
+            raise TypeError("Health must be of type int.")
 
     def set_hunger(self, value):
         """
@@ -158,6 +167,8 @@ class Animal(ABC):
         if isinstance(value, int):
             new_hunger = self.__hunger + value
             self.__hunger = max(0, min(new_hunger, 100))
+        else:
+            raise TypeError("Hunger must be of type int.")
 
     def set_energy(self, value):
         """
@@ -170,6 +181,8 @@ class Animal(ABC):
         if isinstance(value, int):
             new_energy = self.__energy + value
             self.__energy = max(0, min(new_energy, 100))
+        else:
+            raise TypeError("Energy must be of type int.")
 
     def set_happiness(self, value):
         """
@@ -182,6 +195,8 @@ class Animal(ABC):
         if isinstance(value, int):
             new_happiness = self.__happiness + value
             self.__happiness = max(0, min(new_happiness, 100))
+        else:
+            raise TypeError("Happiness must be of type int.")
 
     def set_aggression(self, value):
         """
@@ -194,6 +209,8 @@ class Animal(ABC):
         if isinstance(value, int):
             new_aggression = self.__aggression + value
             self.__aggression = max(0, min(new_aggression, 100))
+        else:
+            raise TypeError("Aggression must be of type int.")
 
     def set_diet(self, diet):
         """
@@ -423,6 +440,8 @@ class BigCat(Mammal):
         if isinstance(value, int):
             new_strength = self.__strength + value
             self.__strength = max(0, min(new_strength, 100))
+        else:
+            raise ValueError("Strength must be an integer.")
 
     def get_animals_attacked(self):
         """

@@ -64,6 +64,8 @@ class Staff:
                 print(f"{self.name} enriched {animal.name}.")
             else:
                 print(f"{self.name} is not able to interact with {animal.name}.")
+        else:
+            raise ValueError("Animal must be of type Animal.")
 
     def clock_in(self):
         self.__is_working = True
@@ -80,6 +82,8 @@ class Staff:
         """
         if isinstance(boolean, bool):
             self.__is_on_leave = boolean
+        else:
+            raise ValueError("Must enter True or False.")
 
 
 class Veterinarian(Staff):
@@ -98,7 +102,10 @@ class Veterinarian(Staff):
     def get_specialisation(self):
         return self.__specialisation
 
-    def set_specialisation(self, specialisation):    # Set specialisation e.g. Mammal Veterinarian.
+    def set_specialisation(self, specialisation):
+        """"
+        This method takes a string and updates the value for the staff members specialisation.
+        """
         if isinstance(specialisation, str):
             self.__specialisation = specialisation
         else:
@@ -118,6 +125,8 @@ class Veterinarian(Staff):
             health_increase = 25
             animal.set_health(health_increase)
             print(f"{self.name} administering medication to {animal.name}...\n")
+        else:
+            raise TypeError("Input must be of the type Animal")
 
 
 class AnimalTrainer(Staff):
@@ -134,6 +143,8 @@ class AnimalTrainer(Staff):
             aggression_decrease = -20
             animal.set_aggression(aggression_decrease)
             print(f"{self.name} has trained {animal.name}.")
+        else:
+            raise TypeError("Input must be of the type Animal")
 
 
 class Zookeeper(Staff):
@@ -170,7 +181,7 @@ class Zookeeper(Staff):
         if isinstance(animal, Animal):
             if isinstance(units, int):
                 animal.set_hunger(units)
-                animal.set_health(units / 2)
+                animal.set_health(int(units / 2))
                 print(f"{self.name} has feed {animal.name}.")
             else:
                 raise TypeError("Value must be an integer.")
@@ -203,6 +214,8 @@ class Zookeeper(Staff):
         if isinstance(enclosure, Jungle):
             enclosure.set_is_raining(boolean)
             print(f"{self.name} has updated the weather status for {enclosure.name}.")
+        else:
+            raise TypeError("Must be of type Jungle.")
 
     def inspect_enclosure(self, enclosure):
         """
@@ -261,6 +274,8 @@ class Administrator(Staff):
             print(f"{self.name} printing report...\n")
             print(enclosure, "\n")
             enclosure.display_animals()
+        else:
+            raise TypeError("Input must be of the type Enclosure.")
 
     def generate_staff_report(self, registry):
         """
@@ -273,6 +288,8 @@ class Administrator(Staff):
         if isinstance(registry, StaffRegistry):
             print(f"{self.name} printing report...\n")
             print(registry, "\n")
+        else:
+            raise TypeError("Input must be of the type StaffRegistry.")
 
     def generate_all_animals_report(self, registry):
         """
@@ -285,6 +302,8 @@ class Administrator(Staff):
         if isinstance(registry, AnimalRegistry):
             print(f"{self.name} printing report...\n")
             print(registry, "\n")
+        else:
+            raise TypeError("Input must be of the type AnimalRegistry.")
 
     def generate_all_enclosure_report(self, registry):
         """
@@ -297,6 +316,8 @@ class Administrator(Staff):
         if isinstance(registry, EnclosureRegistry):
             print(f"{self.name} printing report...\n")
             print(registry, "\n")
+        else:
+            raise TypeError("Input must be of the type EnclosureRegistry.")
 
     def approve_staff_leave(self, staff):
         """
@@ -309,6 +330,8 @@ class Administrator(Staff):
         if isinstance(staff, Staff):
             staff.is_on_leave = True
             print(f"{self.name} approves leave for {staff.name}.")
+        else:
+            raise TypeError("Input must be of the type Staff.")
 
     def update_staff_leave(self, staff):
         """
@@ -321,6 +344,8 @@ class Administrator(Staff):
         if isinstance(staff, Staff):
             staff.is_on_leave = False
             print(f"{self.name} ends leave for {staff.name}.")
+        else:
+            raise TypeError("Input must be of the type Staff.")
 
     def transfer_animal(self, animal, current_enclosure, target_enclosure):
         """

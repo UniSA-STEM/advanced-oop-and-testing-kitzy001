@@ -108,7 +108,7 @@ class AnimalRegistry(Registry):
         and updating the animal attribute for ID.
 
         Parameters:
-            name (str): The animal to add to the registry.
+            name (Animal): The animal to add to the registry.
         """
         if isinstance(name, Animal):
             new_id = self.generate_next_id()
@@ -129,7 +129,7 @@ class EnclosureRegistry(Registry):
         and updating the enclosure attribute for ID.
 
         Parameters:
-            enclosure(str): The enclosure to add to the registry.
+            enclosure(Enclosure): The enclosure to add to the registry.
         """
         if isinstance(enclosure, Enclosure):
             new_id = self.generate_next_id()

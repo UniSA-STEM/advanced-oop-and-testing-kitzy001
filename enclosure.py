@@ -9,7 +9,7 @@ This is my own work as defined by the University's Academic Integrity Policy.
 
 from animal import Mammal, Reptile, MarineAnimal, BigCat, Monkey
 from abc import ABC, abstractmethod
-from exceptions import UnregisteredAnimal
+from exceptions import UnregisteredAnimal, EnclosureCapacityError
 
 class Enclosure(ABC):
     """"
@@ -87,12 +87,14 @@ class Enclosure(ABC):
         """
         if isinstance(boolean, bool):
             self._is_clean = boolean
+        else:
+            raise TypeError("Must be True or False.")
 
     def add_animal(self, animal):
         """
         This method adds an animal to the enclosure after validating the enclosure
         is not already full.
-        Also raises an exception if the animal is not yet registered.
+        Also raises a custom exception if the animal is not yet registered, or if the enclosure is full.
 
         Parameters:
             animal (Animal): The animal to add to the enclosure.
@@ -108,7 +110,7 @@ class Enclosure(ABC):
             else:
                 raise UnregisteredAnimal(animal.name)
         else:
-            raise ValueError("Enclosure is already at capacity.")
+            raise EnclosureCapacityError(animal.name)
 
     def search_for_animal(self, animal_id):
         """
@@ -207,6 +209,8 @@ class Jungle(Enclosure):
         """
         if isinstance(boolean, bool):
             self.__is_raining = boolean
+        else:
+            raise TypeError("Must enter True or False")
 
     def add_animal_to_enclosure(self, animal):
         """
@@ -298,6 +302,8 @@ class ControlledEnclosure(Enclosure):
         """
         if isinstance(temperature, int) or isinstance(temperature, float):
             self.__temperature = temperature
+        else:
+            raise TypeError("Temperature must be of type int or float.")
 
     def add_animal_to_enclosure(self, animal):
         pass
