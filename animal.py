@@ -28,31 +28,37 @@ class Animal(ABC):
 
     def __str__(self):
         return(
-            f"Name: {self.__name}\n"
-            f"Age: {self.__age}\n"
-            f"ID: {self.__id if self.__id is not None else "Not registered yet"}\n"
+            f"Name: {self.name}\n"
+            f"Age: {self.age}\n"
+            f"ID: {self.id if self.id is not None else "Not registered yet"}\n"
             f"Diet: {self.__diet if self.__diet is not None else "Not yet set"}\n"
-            f"Health status: {self.__health} ({self.get_health_string()})\n"
+            f"Health status: {self.health} ({self.get_health_string()})\n"
             f"Enclosure: {self.__enclosure}\n"
         )
+
+    @abstractmethod
+    def cry(self):
+        pass
+
+    @abstractmethod
+    def respond_to_zookeeper(self):
+        pass
+
+    @abstractmethod
+    def explore(self):
+        pass
 
     @property
     def name(self):
         return self.__name
 
-    def set_name(self, name):    # Setter for animal name.
-        if isinstance(name, str):
-            self.__name = name
-        else:
-            raise TypeError("Name must be a string.")
-
     @property
     def id(self):
         return self.__id
 
-    def set_id(self, new_id):    # Setter for animal ID, called when adding animal to registry
-        if isinstance(new_id, str):
-            self.__id = new_id
+    @property
+    def age(self):
+        return self.__age
 
     @property
     def health(self):
@@ -64,41 +70,75 @@ class Animal(ABC):
 
     @property
     def happiness(self):
+        return self.__happiness
 
-    def set_health(self, value):
+    @property
+    def energy(self):
+        return self.__energy
+
+    @property
+    def hunger(self):
+        return self.__hunger
+
+    @property
+    def species(self):
+        return self.__species
+
+    @property
+    def diet(self):
+        return self.__diet
+
+    def get_enclosure(self):
+        return self.__enclosure
+
+    def set_enclosure(self, enclosure):
+        if isinstance(enclosure, str):
+            self.__enclosure = enclosure
+
+    def set_name(self, name):    # Setter for animal name.
+        if isinstance(name, str):
+            self.__name = name
+        else:
+            raise TypeError("Name must be a string.")
+
+    def set_id(self, new_id):    # Setter for animal ID, called when adding animal to registry.
+        if isinstance(new_id, str):
+            self.__id = new_id
+
+    def set_health(self, value):    # Setter for animal health.
         if isinstance(value, int) or isinstance(value, float):
-            self.__health = max(0, min(self.__health + value, 100))
+            self.__health = max(0, min(self.__health + value, 100))    # Ensure value does not exceed 100.
         else:
             raise TypeError("Health must be numeric.")
 
-    def get_health_string(self):
-        if self.get_health() >= 95:
+    def get_health_string(self):    # Returns a string describing animal health.
+        if self.health >= 95:
             health_str = "excellent"
-        elif self.get_health() >= 75:
+        elif self.health >= 75:
             health_str = "healthy"
-        elif self.get_health() >= 50:
+        elif self.health >= 50:
             health_str = "average"
-        elif self.get_health() >= 30:
+        elif self.health >= 30:
             health_str = "not great"
-        elif self.get_health() < 30:
+        elif self.health < 30:
             health_str = "critical"
         return health_str
-
-    def get_health(self):
-        return self.__health
-
-    def get_age(self):
-        return self.__age
-
-    def get_species(self):
-        return self.__species
-
-    def get_hunger(self):
-        return self.__hunger
 
     def set_hunger(self, value):    # Takes an integer and updates the value for hunger.
         if isinstance(value, int):
             self.__hunger = max(0, min(self.__hunger + value, 100))    # Ensure value does not exceed 100.
+
+    def set_energy(self, value):    # Takes an integer and updates the value for energy.
+        if isinstance(value, int):
+            self.__energy = max(0, min(self.__energy + value, 100))    # Ensure value does not exceed 100.
+
+    def set_happiness(self, value):    # Takes an integer and updates the value for happiness.
+        if isinstance(value, int):
+            self.__happiness = max(0, min(self.__happiness + value, 100))  # Ensure value is between 0-100.
+
+    def set_aggression(self, value):    # Takes an integer and updates the value for aggression..
+        if isinstance(value, int):
+            self.__aggression = max(0, min(self.__aggression + value, 100))  # Ensure value is between 0-100.
 
     def set_diet(self, diet):
         if isinstance(diet, str):
@@ -106,43 +146,25 @@ class Animal(ABC):
         else:
             raise TypeError("Diet must be a string")
 
-    def set_enclosure(self, enclosure):
-        if isinstance(enclosure, str):
-            self.__enclosure = enclosure
-
     def eat(self, quantity):
         if self.__diet is not None:
             print(f"Eating {quantity} {self.__diet}...\n")
             self.set_hunger(quantity)
         else:
-            print(f"No diet set for {self.__name}. Please set a diet.\n")
+            print(f"No diet set for {self.name}. Please set a diet.\n")
 
     def sleep(self):
-        energy_increase = 20
-        self.__energy = max(0, min(self.__energy + energy_increase, 100))    # Ensure value does not exceed 100.
-
-    def explore(self):
-        energy_decrease = 20
-        self.__energy = max(0, min(self.__energy - energy_decrease, 100))    # Ensure value is between 0-100.
-
-    def set_happiness(self, value):
-        self.__happiness = max(0, min(self.__happiness + value, 100))    # Ensure value is between 0-100.
-
-   @abstractmethod
-    def cry(self):
-        pass
-
-    @abstractmethod
-    def respond_to_zookeeper(self):
-        pass
+        energy_increase = 50
+        self.set_energy(energy_increase)
 
 
 class Mammal(Animal):
-    def __init__(self, name, species, age, id, diet, health, hunger):
-        super().__init__(name, species, age, id, diet, health, hunger)
+    def __init__(self, name, species, age, id=None, diet=None):
+        super().__init__(name, species, age, id, diet)
         self.__habitat = None
 
-    def get_habitat(self):
+    @property
+    def habitat(self):
         return self.__habitat
 
     def set_habitat(self, habitat):
@@ -165,9 +187,9 @@ class Mammal(Animal):
 
 
 class Reptile(Animal):
-    def __init__(self, name, species, age, diet=None, health=100, hunger=50, egg_count=0):
-        Animal.__init__(self, name, species, age, diet, health, hunger)
-        self.__egg_count = egg_count
+    def __init__(self, name, species, age, id=None, diet=None):
+        Animal.__init__(self, name, species, age, id, diet)
+        self.__egg_count = 0
 
     def cry(self):
         print("Hisssss...")
@@ -181,9 +203,17 @@ class Reptile(Animal):
             happiness_gained = - 40
         self.set_happiness(happiness_gained)
 
+    def lay_egg(self):
+        self.__egg_count += 1
+
+    def bathe_in_sun(self):
+        happiness_gained = 20
+        self.set_happiness(happiness_gained)
+
+
 class MarineAnimal(Animal):
-    def __init__(self, name, species, age, diet=None, health=100, hunger=50):
-        Animal.__init__(self, name, species, age, diet=diet, health=health, hunger=hunger)
+    def __init__(self, name, species, age, id=None, diet=None):
+        Animal.__init__(self, name, species, age, id, diet)
 
     def cry(self):
         print("Underwater noises....")
@@ -197,26 +227,29 @@ class MarineAnimal(Animal):
             happiness_gained = - 50
         self.set_happiness(happiness_gained)
 
+    def swim(self):
+        self.
+
 
 class BigCat(Mammal):
     def __init__(self, name, species, age, id=None, diet=None, health=100, hunger=50, strength=25):
         Mammal.__init__(self, name, species, age, id=id, diet=diet, health=health, hunger=hunger)
         self.__strength = strength
-        self.__animals_attacked = [] # Save animals as an object to this set.
+        self.__animals_attacked = []    # Save animals as an object to a list.
         self.__attack_count = len(self.get_animals_attacked())
 
     @property
     def attack_count(self):
         return self.__attack_count
 
-    def get_animals_attacked(self):
+    def get_animals_attacked(self):    # Returns a list of the animals attacked.
         return self.__animals_attacked
 
     def cry(self):
         print("Roar!!!")
 
-    def attack(self, opponent):
-        if isinstance(opponent, BigCat):    # Validate only another BigCat can be targeted.
+    def attack(self, opponent):    # This method takes an animal object and launches an attack is the object is of the type BigCat.
+        if isinstance(opponent, BigCat):
             self_damage = opponent.get_damage()
             self.set_health(self_damage)
             opponent_damage = self.get_damage()
@@ -226,13 +259,14 @@ class BigCat(Mammal):
         else:
             print(f"{self.get_name()} cannot attack {opponent.get_name()} as they are a {opponent.get_species()}.")
 
-    def get_damage(self):
+    def get_damage(self):    # Generates a random value and calculates damage based on strength rating.
         roll = random.random()
-        damage = round((self.__strength * roll), 0)
-        return - damage
+        damage = - (round((self.__strength * roll), 0))
+        return damage
 
     def respond_to_zookeeper(self):
         super().respond_to_zookeeper()
+
 
 class Monkey(Mammal):
     def __init__(self, name, species, age, diet=None, health=100, hunger=50):
@@ -241,7 +275,15 @@ class Monkey(Mammal):
     def cry(self):
         print("Give orange me give eat orange me eat orange give me eat orange give me you.")
 
-    def respond_to_zookeeper(self):
+    def respond_to_zookeeper(self):    # Inherits method from parent class.
         super().respond_to_zookeeper()
+
+    def steal_visitors_hat(self):    # Increases value for happiness and aggression.
+        happiness_gained = 25
+        aggression_gained = 25
+        self.set_happiness(happiness_gained)
+        self.set_aggression(aggression_gained)
+        print(f"{self.name} has stolen a visitors hat!")
+
 
 
