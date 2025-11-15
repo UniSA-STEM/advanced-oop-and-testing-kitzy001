@@ -13,6 +13,15 @@ import random
 class Animal(ABC):
 
     def __init__(self, name, species, age, diet=None):
+        """"
+        Initialises an instance of the Animal class.
+
+        Parameters:
+        name (str): The name of the animal.
+            species (str): The species of the animal.
+            age (int): The age of the animal.
+            diet (str, optional): Type of food the animal eats.
+        """
         self.__name = name
         self.__species = species
         self.__age = age
@@ -39,10 +48,16 @@ class Animal(ABC):
 
     @abstractmethod
     def cry(self):
+        """
+        This method defines the unique sound the animal makes.
+        """
         pass
 
     @abstractmethod
     def respond_to_zookeeper(self):
+        """
+        This method defines how the animal responds to a zookeeper.
+        """
         pass
 
     @property
@@ -101,7 +116,11 @@ class Animal(ABC):
         if isinstance(new_id, str):
             self.__id = new_id
 
-    def check_health(self):    # Returns a string describing animal health.
+    def check_health(self):
+        """
+        This method returns a descriptive string for the animal's health status.
+        This method also sets the is_sick attribute to True if health is low.
+        """
         if self.health >= 95:
             health_str = "excellent"
         elif self.health >= 75:
@@ -116,38 +135,88 @@ class Animal(ABC):
             self.__is_sick = True
         return health_str
 
-    def set_health(self, value):    # Takes an integer and updates the value for health.
+    def set_health(self, value):
+        """
+        This method updates the health value of the animal, validating that
+        the value for health does not exceed 0-100.
+
+        Parameters:
+            value (int): Amount to add to current value for self.health.
+        """
         if isinstance(value, int):
             new_health = self.__health + value
-            self.__health = max(0, min(new_health, 100))  # Ensure value is between 0-100.
+            self.__health = max(0, min(new_health, 100))
 
-    def set_hunger(self, value):    # Takes an integer and updates the value for hunger.
+    def set_hunger(self, value):
+        """
+        This method updates the hunger value of the animal, validating that
+        the value for hunger does not exceed 0-100.
+
+        Parameters:
+            value (int): Amount to add to current value for self.hunger.
+        """
         if isinstance(value, int):
             new_hunger = self.__hunger + value
-            self.__hunger = max(0, min(new_hunger, 100)) # Ensure value is between 0-100.
+            self.__hunger = max(0, min(new_hunger, 100))
 
-    def set_energy(self, value):    # Takes an integer and updates the value for energy.
+    def set_energy(self, value):
+        """
+        This method updates the energy value of the animal, validating that
+        the value for energy does not exceed 0-100.
+
+        Parameters:
+            value (int): Amount to add to current value for self.energy.
+        """
         if isinstance(value, int):
             new_energy = self.__energy + value
-            self.__energy = max(0, min(new_energy, 100))  # Ensure value is between 0-100.
+            self.__energy = max(0, min(new_energy, 100))
 
-    def set_happiness(self, value):    # Takes an integer and updates the value for happiness.
+    def set_happiness(self, value):
+        """
+        This method updates the happiness value of the animal, validating that
+        the value for happiness does not exceed 0-100.
+
+        Parameters:
+            value (int): Amount to add to current value for self.happiness.
+        """
         if isinstance(value, int):
             new_happiness = self.__happiness + value
-            self.__happiness = max(0, min(new_happiness, 100))  # Ensure value is between 0-100.
+            self.__happiness = max(0, min(new_happiness, 100))
 
-    def set_aggression(self, value):    # Takes an integer and updates the value for aggression.
+    def set_aggression(self, value):
+        """
+        This method updates the aggression value of the animal, validating that
+        the value for aggression does not exceed 0-100.
+
+        Parameters:
+            value (int): Amount to add to current value for self.aggression.
+        """
         if isinstance(value, int):
             new_aggression = self.__aggression + value
-            self.__aggression = max(0, min(new_aggression, 100))  # Ensure value is between 0-100.
+            self.__aggression = max(0, min(new_aggression, 100))
 
     def set_diet(self, diet):
+        """
+        This method updates the diet attribute of the animal, validating that
+        the entry is a string.
+
+        Parameters:
+            diet (str): String to describe diet e.g. "fish"
+        """
         if isinstance(diet, str):
             self.__diet = diet
         else:
             raise TypeError("Diet must be a string")
 
     def eat(self, quantity):
+        """
+        This method validates the animals diet has been set and updates the animals
+        hunger value based on the quantity provided.
+        Also prints feedback to screen where no diet has been set.
+
+        Parameters:
+            quantity (int): Units of food.
+        """
         if self.__diet is not None:
             print(f"Eating {quantity} {self.__diet}...\n")
             self.set_hunger(quantity)
@@ -155,12 +224,20 @@ class Animal(ABC):
             print(f"No diet set for {self.name}. Please set a diet.\n")
 
     def sleep(self):
+        """
+        This method updates the value for the animals energy and health level as
+        the animal has slept.
+        """
         energy_increase = 50
         health_increase = 10
         self.set_energy(energy_increase)
         self.set_health(health_increase)
 
     def explore(self):
+        """
+        This method updates the value for the animals energy, happiness, aggression,
+        hunger and health level as the animal has explored.
+        """
         energy_spent = -20
         happiness_gained = 20
         aggression_decrease = -20
@@ -174,7 +251,14 @@ class Animal(ABC):
 
 
 class Mammal(Animal):
+
     def __init__(self, name, species, age, diet=None, habitat=None):
+        """"
+        Initialises an instance of the Mammal class, subclass of Animal class.
+
+        Additional parameters:
+            habitat (str) : name of the animal's habitat.
+        """
         super().__init__(name, species, age, diet)
         self.__habitat = habitat
 
@@ -183,6 +267,12 @@ class Mammal(Animal):
         return self.__habitat
 
     def set_habitat(self, habitat):
+        """
+        This method updates the value for the animals habitat attribute.
+
+        Parameters:
+            habitat (str): name of the animal's habitat.
+        """
         if isinstance(habitat, str):
             self.__habitat = habitat
         else:
@@ -192,6 +282,10 @@ class Mammal(Animal):
         print("Mammal noises...")
 
     def respond_to_zookeeper(self):
+        """
+        This method updates the animal attribute values based on the Mammal class nature,
+        when the animal has interacted with a zookeeper.
+        """
         if self.aggression == 0:
             happiness_gained = 20
         elif self.aggression <= 50:
@@ -202,7 +296,11 @@ class Mammal(Animal):
 
 
 class Reptile(Animal):
+
     def __init__(self, name, species, age, diet=None):
+        """"
+        Initialises an instance of the Reptile class, subclass of Animal class.
+        """
         Animal.__init__(self, name, species, age, diet)
         self.set_aggression(25)
         self.__egg_count = 0
@@ -211,6 +309,10 @@ class Reptile(Animal):
         print("Hiss...")
 
     def respond_to_zookeeper(self):
+        """
+        This method updates the animal attribute values based on the Reptile class nature,
+        when the animal has interacted with a zookeeper.
+        """
         if self.aggression == 0:
             happiness_gained = 50
         elif self.aggression <= 50:
@@ -220,27 +322,45 @@ class Reptile(Animal):
         self.set_happiness(happiness_gained)
 
     def lay_egg(self):
+        """
+        This method increases the animals egg count value by 1.
+        """
         self.__egg_count += 1
 
     def bathe_in_sun(self):
+        """
+        This method updates the animal attribute values for happiness and
+        aggression after the animal has bathed in the sun.
+        """
         happiness_gained = 20
         aggression_decrease = -20
         self.set_happiness(happiness_gained)
         self.set_aggression(aggression_decrease)
 
     def explore(self):
+        """
+        This method adds a descriptive string to the parent method.
+        """
         super().explore()
         print(f"{self.name} explores their terrarium and finds a new hiding place!\n")
 
 
 class MarineAnimal(Animal):
+
     def __init__(self, name, species, age, diet=None):
+        """"
+        Initialises an instance of the MarineAnimal class, subclass of Animal class.
+        """
         Animal.__init__(self, name, species, age, diet)
 
     def cry(self):
         print("Underwater noises....")
 
     def respond_to_zookeeper(self):
+        """
+        This method updates the animal attribute values based on the MarineAnimal class nature,
+        when the animal has interacted with a zookeeper.
+        """
         if self.aggression == 0:
             happiness_gained = 10
         elif self.aggression <= 50:
@@ -250,21 +370,37 @@ class MarineAnimal(Animal):
         self.set_happiness(happiness_gained)
 
     def swim_with_trainer(self):
+        """
+        This method updates the animal attribute values for happiness and energy
+        after the animal has swum with an animal trainer.
+        """
         happiness_gained = 30
         energy_spent = -30
         self.set_happiness(happiness_gained)
         self.set_energy(energy_spent)
 
     def explore(self):
+        """
+        This method adds a descriptive string to the parent method.
+        """
         super().explore()
         print(f"{self.name} swims around in their aquarium, what a sight to see!\n")
 
 
 class BigCat(Mammal):
+
     def __init__(self, name, species, age, diet=None):
+        """"
+        Initialises an instance of the BigCat class, subclass of Mammal class.
+
+        Additional attributes:
+            strength(str): initialised to 50.
+            animals_attacked(list): initialised to empty.
+            attack_count(int): number of animals attacked.
+        """
         Mammal.__init__(self, name, species, age, diet)
-        self.__strength = 50    # Set starting strength to 50.
-        self.__animals_attacked = []    # Save animals as an object to a list.
+        self.__strength = 50
+        self.__animals_attacked = []
         self.__attack_count = len(self.get_animals_attacked())
         self.set_aggression(25)
 
@@ -276,28 +412,52 @@ class BigCat(Mammal):
     def strength(self):
         return self.__strength
 
-    def set_strength (self, value):  # Takes an integer and updates the value for strength.
-        if isinstance(value, int):
-            self.__strength = max(0, min(self.__strength + value, 100))  # Ensure value is between 0-100.
+    def set_strength (self, value):
+        """
+        This method updates the strength value of the animal, validating that
+        the value for strength does not exceed 0-100.
 
-    def get_animals_attacked(self):    # Returns a list of the animals attacked.
+        Parameters:
+            value (int): Amount to add to current value for self.strength.
+        """
+        if isinstance(value, int):
+            new_strength = self.__strength + value
+            self.__strength = max(0, min(new_strength, 100))
+
+    def get_animals_attacked(self):
+        """
+        This method returns a list of the animals this animal has attacked.
+        """
         return self.__animals_attacked
 
     def cry(self):
         print("Roar!!!")
 
-    def attack(self, opponent):    # This method takes an animal object and launches an attack is the object is of the type BigCat.
+    def attack(self, opponent):
+        """
+        This method takes an animal as an opponent and launches an attack, calling get_damage()
+        to decrease the health value of both the opponent and the animal (self).
+        Also validates the opponent provided is of the type BigCat.
+
+        Parameters:
+            opponent(BigCat)
+        """
         if isinstance(opponent, BigCat):
             self_damage = opponent.get_damage()
-            self.set_health(self_damage)
+            self.set_health(int(self_damage))
             opponent_damage = self.get_damage()
-            opponent.set_health(opponent_damage)
+            opponent.set_health(int(opponent_damage))
             self.__animals_attacked.append(opponent)
+            self.set_aggression(10)
             print(self.__animals_attacked)
         else:
             print(f"{self.name} cannot attack {opponent.name} as they are a {opponent.species}.")
 
-    def get_damage(self):    # Generates a random value and calculates damage based on strength rating.
+    def get_damage(self):
+        """
+        This method uses the random library to generate a random value and calculate
+        damage based on the animals strength rating, then returns damage value.
+        """
         roll = random.random()
         damage = - (round((self.__strength * roll), 0))
         return damage
@@ -305,7 +465,12 @@ class BigCat(Mammal):
     def respond_to_zookeeper(self):
         super().respond_to_zookeeper()
 
-    def provoke_visitor(self):    # Decreases energy and increases aggression level.
+    def provoke_visitor(self):
+        """
+        This method updates the values for energy and aggression when the animal
+        has provoked a visitor of the zoo.
+        Also prints feedback to the screen advising of the event.
+        """
         energy_spent = -20
         aggression_gained = 20
         self.set_aggression(aggression_gained)
@@ -313,16 +478,26 @@ class BigCat(Mammal):
         print(f"{self.name} has provoked a visitor at the zoo!\n")
 
     def eat(self, quantity):
-        super().eat(quantity)    # Call parent method to update hunger level.
+        """
+        This method calls the parent method and adds to the animals strength rating in addition.
+        """
+        super().eat(quantity)
         strength_gained = 10
-        self.set_strength(strength_gained)    # Call set_strength to increase strength level.
+        self.set_strength(strength_gained)
 
     def explore(self):
+        """
+        This method adds a descriptive string to the parent method.
+        """
         super().explore()
         print(f"{self.name} runs around the plains...\n")
 
 class Monkey(Mammal):
+
     def __init__(self, name, species, age, diet=None):
+        """"
+        Initialises an instance of the Monkey class, subclass of Mammal class.
+        """
         Mammal.__init__(self, name, species, age, diet)
         self.set_happiness(25)
         self.__hats_stolen = 0
@@ -339,7 +514,11 @@ class Monkey(Mammal):
     def cry(self):
         print("Give orange me give eat orange me eat orange give me eat orange give me you.\n")
 
-    def respond_to_zookeeper(self):    # Inherits method from parent class.
+    def respond_to_zookeeper(self):
+        """
+        This method updates the animal attribute values based on the Monkey class nature,
+        when the animal has interacted with a zookeeper.
+        """
         enclosure = self.get_enclosure()
         if enclosure is not None:
             if not enclosure.is_raining:
@@ -348,6 +527,10 @@ class Monkey(Mammal):
                 print(f"{self.name} will not interact with zoo staff while it is raining.\n")
 
     def explore(self):
+        """
+        This method checks that the enclosure is not currently raining and then adds a descriptive
+        string to the parent method. Provides feedback to screen if enclosure is raining.
+        """
         enclosure = self.get_enclosure()
         if not enclosure.is_raining:
             super().explore()
@@ -355,7 +538,11 @@ class Monkey(Mammal):
         else:
             print(f"{self.name} will not explore while it is raining.\n")
 
-    def steal_visitors_hat(self):    # Updates value for happiness and aggression.
+    def steal_visitors_hat(self):
+        """
+        This method updates the attributes for hats_stolen, happiness and aggression when
+        the animal steals a zoo visitors hat. Also prints feedback to screen.
+        """
         self.__hats_stolen += 1
         happiness_gained = 25
         aggression_gained = 25
@@ -363,7 +550,11 @@ class Monkey(Mammal):
         self.set_aggression(aggression_gained)
         print(f"{self.name} has stolen a visitors hat!\n")
 
-    def throw_banana(self):    # Updates value for aggression and energy.
+    def throw_banana(self):
+        """
+        This method updates the attributes bananas_thrown, aggression and energy when
+        the animal throws a banana at a zoo visitor. Also prints feedback to screen.
+        """
         self.__bananas_thrown += 1
         aggression_gained = 10
         energy_spent = -10
