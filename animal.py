@@ -44,10 +44,6 @@ class Animal(ABC):
     def respond_to_zookeeper(self):
         pass
 
-    @abstractmethod
-    def explore(self):
-        pass
-
     @property
     def name(self):
         return self.__name
@@ -136,7 +132,7 @@ class Animal(ABC):
         if isinstance(value, int):
             self.__happiness = max(0, min(self.__happiness + value, 100))  # Ensure value is between 0-100.
 
-    def set_aggression(self, value):    # Takes an integer and updates the value for aggression..
+    def set_aggression(self, value):    # Takes an integer and updates the value for aggression.
         if isinstance(value, int):
             self.__aggression = max(0, min(self.__aggression + value, 100))  # Ensure value is between 0-100.
 
@@ -156,6 +152,14 @@ class Animal(ABC):
     def sleep(self):
         energy_increase = 50
         self.set_energy(energy_increase)
+
+    def explore(self):
+        energy_spent = -20
+        happiness_gained = 20
+        aggression_decrease = 20
+        self.set_energy(energy_spent)
+        self.set_happiness(happiness_gained)
+        self.set_aggression(aggression_decrease)
 
 
 class Mammal(Animal):
@@ -182,7 +186,7 @@ class Mammal(Animal):
         elif self.aggression <= 50:
             happiness_gained = 5
         else:
-            happiness_gained = - 20
+            happiness_gained = -20
         self.set_happiness(happiness_gained)
 
 
@@ -192,7 +196,7 @@ class Reptile(Animal):
         self.__egg_count = 0
 
     def cry(self):
-        print("Hisssss...")
+        print("Hiss...")
 
     def respond_to_zookeeper(self):
         if self.aggression == 0:
@@ -209,6 +213,10 @@ class Reptile(Animal):
     def bathe_in_sun(self):
         happiness_gained = 20
         self.set_happiness(happiness_gained)
+
+    def explore(self):
+        super().explore()
+        print(f"{self.name} explores their terrarium and finds a new hiding place!\n")
 
 
 class MarineAnimal(Animal):
@@ -227,11 +235,15 @@ class MarineAnimal(Animal):
             happiness_gained = -50
         self.set_happiness(happiness_gained)
 
-    def swim(self):
+    def swim_with_trainer(self):
         happiness_gained = 30
         energy_spent = -30
         self.set_happiness(happiness_gained)
         self.set_energy(energy_spent)
+
+    def explore(self):
+        super().explore()
+        print(f"{self.name} swims around in their aquarium, what a sight to see!\n")
 
 
 class BigCat(Mammal):
@@ -290,6 +302,9 @@ class BigCat(Mammal):
         strength_gained = 10
         self.set_strength(strength_gained)    # Call set_strength to increase strength level.
 
+    def explore(self):
+        super().explore()
+        print(f"{self.name} runs around the plains...\n")
 
 class Monkey(Mammal):
     def __init__(self, name, species, age, diet=None):
@@ -302,6 +317,10 @@ class Monkey(Mammal):
 
     def respond_to_zookeeper(self):    # Inherits method from parent class.
         super().respond_to_zookeeper()
+
+    def explore(self):
+        super().explore()
+        print(f"{self.name} swings from vine to vine!\n")
 
     def steal_visitors_hat(self):    # Updates value for happiness and aggression.
         self.__hats_stolen += 1
