@@ -266,6 +266,16 @@ class Animal(ABC):
         self.set_hunger(hunger_change)
         self.set_health(health_change)
 
+    def fit_for_transfer(self):
+        """"
+        This method checks to see if an animal is fit for enclosure transfer, based on their sickness
+        or behaviour, and returns a boolean value of true or false.
+        """
+        if self.is_sick or self.aggression >= 40:
+            return False
+        else:
+            return True
+
 
 class Mammal(Animal):
 

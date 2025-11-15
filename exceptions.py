@@ -30,3 +30,15 @@ class EnclosureCapacityError(Exception):
             enclosure_name(str): The enclosure to add to the registry.
         """
         super().__init__(f"Enclosure '{enclosure_name}' is at capacity, cannot add animal.")
+
+class RequirementsError(Exception):
+
+    def __init__(self, staff_name):
+        """
+        This exception raises an error when a staff member tries to complete an action on an animal
+        of the type MarineAnimal when they cannot swim.
+
+        Parameters:
+            staff_name(str): The staff name trying to complete the action.
+        """
+        super().__init__(f"Staff member {staff_name} cannot swim, therefore cannot complete this action.")

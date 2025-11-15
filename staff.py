@@ -7,15 +7,15 @@ Username: kitzy001
 This is my own work as defined by the University's Academic Integrity Policy.
 """
 
-from animal import Animal, BigCat, Monkey
+from animal import Animal, BigCat, Monkey, MarineAnimal
 from enclosure import Enclosure, Terrarium, Aquarium, Jungle
 from report import HealthReport, BigCatReport, MonkeyReport
-
+from exceptions import RequirementsError
 
 class Staff:
 
     def __init__(self, name, staff_id):
-        """"
+        """
         Initialises an instance of the Staff class.
 
         Parameters:
@@ -27,6 +27,7 @@ class Staff:
         self.__is_working = False
         self.__can_enrich_animal = False
         self.__is_on_leave = False
+        self.__can_swim = False
 
     def __str__(self):
         """
@@ -48,6 +49,10 @@ class Staff:
     @property
     def can_enrich_animal(self):
         return self.__can_enrich_animal
+
+    @property
+    def can_swim(self):
+        return self.__can_swim
 
     def enrich_animal(self, animal):
         """
@@ -85,46 +90,62 @@ class Staff:
         else:
             raise ValueError("Must enter True or False.")
 
+    def learn_to_swim(self):
+        self.__can_swim = True
 
 class Veterinarian(Staff):
 
-    def __init__(self, name, staff_id, specialisation=None):
+    def __init__(self, name, staff_id, skill_level=0):
         """"
         Initialises an instance of the Veterinarian class, subclass of Staff.
 
         Additional parameters:
-            specialisation (Specialisation): The specialisation of the staff member.
+            skill_level (int): The skill level of the veterinarian
         """
         super().__init__(name, staff_id)
-        self.__specialisation = specialisation
+        self.__skill_level = skill_level
         self.__can_handle_animal = True
 
-    def get_specialisation(self):
-        return self.__specialisation
+    @property
+    def skill_level(self):
+        return self.__skill_level
 
-    def set_specialisation(self, specialisation):
+    def increase_skill_level(self):
         """"
-        This method takes a string and updates the value for the staff members specialisation.
+        This method increases the value for the staff members skill level by 1.
         """
-        if isinstance(specialisation, str):
-            self.__specialisation = specialisation
-        else:
-            raise TypeError("Specialisation must be a string")
+        self.__skill_level += 1
 
     def perform_health_check(self, animal):
+        """"
+        This method takes an animal and performs a health check on them, printing the
+        results to the screen. This increases the staffs skill level by 1. Also Validates that the
+        staff member can swim if the animal of the type MarineAnimal before performing the action.
+        """
         if isinstance(animal, Animal):
+            if isinstance(animal, MarineAnimal) and not self.can_swim:
+                raise RequirementsError(self.name)
             print(
                 f"{self.name} assessing the health of {animal.name}.\n"
                 f"Health status: {animal.health} ({animal.check_health()})\n"
             )
+            self.increase_skill_level()
         else:
             raise TypeError("Input must be of the type Animal")
 
     def administer_medication(self, animal):
+        """"
+        This method takes an animal and updates the health value. Increases staff skill level by 1.
+        Also validates that the staff member can swim, if the animal is of the type MarineAnimal,
+        before performing the action.
+        """
         if isinstance(animal, Animal):
+            if isinstance(animal, MarineAnimal) and not self.can_swim:
+                raise RequirementsError(self.name)
             health_increase = 25
             animal.set_health(health_increase)
             print(f"{self.name} administering medication to {animal.name}...\n")
+            self.increase_skill_level()
         else:
             raise TypeError("Input must be of the type Animal")
 
@@ -132,17 +153,29 @@ class Veterinarian(Staff):
 class AnimalTrainer(Staff):
 
     def __init__(self, name, staff_id):
-        """"
+        """
         Initialises an instance of the AnimalTrainer class, subclass of Staff.
         """
         super().__init__(name, staff_id)
         self.__can_enrich_animal = True
 
     def train_animal(self, animal):
+        """"
+        This method takes an animal, validates it is of the type Animal, and trains the animal,
+        decreasing their aggression level by 20.
+        Also validates if the staff member can swim, if the animal is of the instance MarineAnimal,
+        raises an exception if the staff member cannot swim.
+
+        Parameters:
+            animal (Animal): The animal to train.
+        """
         if isinstance(animal, Animal):
-            aggression_decrease = -20
-            animal.set_aggression(aggression_decrease)
-            print(f"{self.name} has trained {animal.name}.")
+            if isinstance(animal, MarineAnimal) and not self.can_swim:
+                raise RequirementsError(self.name)
+            else:
+                aggression_decrease = -20
+                animal.set_aggression(aggression_decrease)
+                print(f"{self.name} has trained {animal.name}.")
         else:
             raise TypeError("Input must be of the type Animal")
 
@@ -159,13 +192,17 @@ class Zookeeper(Staff):
     def clean_enclosure(self, enclosure):
         """"
         This method takes an enclosure and sets it to clean.
+        Validates that user can swim if the enclosure is of the type Aquarium.
 
         Parameters:
             enclosure (Enclosure): The enclosure for the staff member to clean.
         """
         if isinstance(enclosure, Enclosure):
-            enclosure.set_is_clean(True)
-            print(f"{self.name} has cleaned {enclosure.name}.")
+            if isinstance(enclosure, Aquarium) and not self.can_swim:
+                raise RequirementsError(self.name)
+            else:
+                enclosure.set_is_clean(True)
+                print(f"{self.name} has cleaned {enclosure.name}.")
         else:
             raise TypeError("Must be of the type Enclosure.")
 
@@ -173,12 +210,16 @@ class Zookeeper(Staff):
         """"
         This method feeds an animal, updating the value for an animals hunger. The value for
         health is also updated by 0.5x the quantity of food.
+        Validates that staff member can swim before performing the action, if the animal is of
+        the type MarineAnimal.
 
         Parameters:
             animal (Animal): The animal to update.
             units (int): The units of food to feed to the animal.
         """
         if isinstance(animal, Animal):
+            if isinstance(animal, MarineAnimal) and not self.can_swim:
+                raise RequirementsError(self.name)
             if isinstance(units, int):
                 animal.set_hunger(units)
                 animal.set_health(int(units / 2))
@@ -221,16 +262,20 @@ class Zookeeper(Staff):
         """
         This method inspects an enclosure to see if it is clean, then calls another method to
         decrease animal health if the enclosure is found to not be clean.
+        Validates that staff member can swim before performing the action, if the enclosure is of
+        the type Aquarium.
 
         Parameters:
             enclosure (Enclosure): The enclosure to update.
         """
         if isinstance(enclosure, Enclosure):
+            if isinstance(enclosure, Aquarium) and not self.can_swim:
+                raise RequirementsError(self.name)
             if enclosure.is_clean:
-                print(f"{self.name} has found {enclosure.name} to be clean.")
+                 print(f"{self.name} has found {enclosure.name} to be clean.")
             else:
                 enclosure.decrease_animals_health()
-                print(f"{enclosure.name} is not clean! Animals in {enclosure.name} have lost health.\n")
+                print(f"{enclosure.name} is not clean! Animals in {enclosure.name} have lost health as a result.\n")
         else:
             raise TypeError("Must be of type Enclosure.")
 
@@ -363,12 +408,13 @@ class Administrator(Staff):
             raise TypeError("Input must be of the type Enclosure")
         if not isinstance(target_enclosure, Enclosure):
             raise TypeError("Input must be of the type Enclosure")
-        if animal.is_sick:
-            print(f"Unable to move {animal.name} because they are sick.")
+        if animal.fit_for_transfer() is False:
+            print(f"Unable to move {animal.name} due to their health and/or behaviour. Run a report for more info.\n")
         else:
             current_enclosure.remove_animal(animal)
             target_enclosure.add_animal_to_enclosure(animal)
-            print(f"{self.name} successfully transferred {animal.name} to {current_enclosure.name}.")
+            print(f"{self.name} successfully transferred {animal.name} to {current_enclosure.name}.\n")
+
 
 
 
