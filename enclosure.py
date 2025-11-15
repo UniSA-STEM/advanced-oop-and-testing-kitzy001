@@ -114,7 +114,8 @@ class Enclosure(ABC):
             animal_decrease = -10
             for animal in self._animals:
                 animal.set_health(animal_decrease)    # Calls method to decrease health for all animals in enclosure.
-
+            return True
+        return False
 
 class Jungle(Enclosure):    # An enclosure to hold animals of the type Monkey.
     def __init__(self, name, capacity):

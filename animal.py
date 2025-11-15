@@ -8,7 +8,6 @@ This is my own work as defined by the University's Academic Integrity Policy.
 """
 
 from abc import ABC, abstractmethod
-from enclosure import Enclosure
 import random
 
 class Animal(ABC):
@@ -94,6 +93,7 @@ class Animal(ABC):
         return self.__enclosure
 
     def set_enclosure(self, enclosure):
+        from enclosure import Enclosure
         if isinstance(enclosure, Enclosure):
             self.__enclosure = enclosure
 
@@ -106,7 +106,7 @@ class Animal(ABC):
             health_str = "excellent"
         elif self.health >= 75:
             health_str = "healthy"
-        elif self.health >= 50:
+        elif self.health >= 40:
             health_str = "average"
         elif self.health >= 25:
             health_str = "unhealthy"
@@ -118,23 +118,28 @@ class Animal(ABC):
 
     def set_health(self, value):    # Takes an integer and updates the value for health.
         if isinstance(value, int):
-            self.__health = max(0, min(self.__health + value, 100))    # Ensure value does not exceed 100.
+            new_health = self.__health + value
+            self.__health = max(0, min(new_health, 100))  # Ensure value is between 0-100.
 
     def set_hunger(self, value):    # Takes an integer and updates the value for hunger.
         if isinstance(value, int):
-            self.__hunger = max(0, min(self.__hunger + value, 100))    # Ensure value does not exceed 100.
+            new_hunger = self.__hunger + value
+            self.__hunger = max(0, min(new_hunger, 100)) # Ensure value is between 0-100.
 
     def set_energy(self, value):    # Takes an integer and updates the value for energy.
         if isinstance(value, int):
-            self.__energy = max(0, min(self.__energy + value, 100))    # Ensure value does not exceed 100.
+            new_energy = self.__energy + value
+            self.__energy = max(0, min(new_energy, 100))  # Ensure value is between 0-100.
 
     def set_happiness(self, value):    # Takes an integer and updates the value for happiness.
         if isinstance(value, int):
-            self.__happiness = max(0, min(self.__happiness + value, 100))  # Ensure value is between 0-100.
+            new_happiness = self.__happiness + value
+            self.__happiness = max(0, min(new_happiness, 100))  # Ensure value is between 0-100.
 
     def set_aggression(self, value):    # Takes an integer and updates the value for aggression.
         if isinstance(value, int):
-            self.__aggression = max(0, min(self.__aggression + value, 100))  # Ensure value is between 0-100.
+            new_aggression = self.__aggression + value
+            self.__aggression = max(0, min(new_aggression, 100))  # Ensure value is between 0-100.
 
     def set_diet(self, diet):
         if isinstance(diet, str):
@@ -158,7 +163,7 @@ class Animal(ABC):
     def explore(self):
         energy_spent = -20
         happiness_gained = 20
-        aggression_decrease = 20
+        aggression_decrease = -20
         hunger_change = -20
         health_change = -15
         self.set_energy(energy_spent)
@@ -199,6 +204,7 @@ class Mammal(Animal):
 class Reptile(Animal):
     def __init__(self, name, species, age, diet=None):
         Animal.__init__(self, name, species, age, diet)
+        self.set_aggression(25)
         self.__egg_count = 0
 
     def cry(self):
@@ -260,6 +266,7 @@ class BigCat(Mammal):
         self.__strength = 50    # Set starting strength to 50.
         self.__animals_attacked = []    # Save animals as an object to a list.
         self.__attack_count = len(self.get_animals_attacked())
+        self.set_aggression(25)
 
     @property
     def attack_count(self):
@@ -317,6 +324,7 @@ class BigCat(Mammal):
 class Monkey(Mammal):
     def __init__(self, name, species, age, diet=None):
         Mammal.__init__(self, name, species, age, diet)
+        self.set_happiness(25)
         self.__hats_stolen = 0
         self.__bananas_thrown = 0
 
@@ -333,10 +341,11 @@ class Monkey(Mammal):
 
     def respond_to_zookeeper(self):    # Inherits method from parent class.
         enclosure = self.get_enclosure()
-        if not enclosure.is_raining:
-            super().respond_to_zookeeper()
-        else:
-            print(f"{self.name} will not interact with zoo staff while it is raining.\n")
+        if enclosure is not None:
+            if not enclosure.is_raining:
+                super().respond_to_zookeeper()
+            else:
+                print(f"{self.name} will not interact with zoo staff while it is raining.\n")
 
     def explore(self):
         enclosure = self.get_enclosure()

@@ -1,6 +1,6 @@
 """
-File: staff.py
-Description: This file contains the class Registry, and it's child classes
+File: registry.py
+Description: This file contains the class Registry, and it's child classes.
 Author: Zoe Kittel
 ID: 110484404
 Username: kitzy001
@@ -9,8 +9,9 @@ This is my own work as defined by the University's Academic Integrity Policy.
 from abc import ABC, abstractmethod
 
 from enclosure import Enclosure
-from staff import Staff, Veterinarian, Zookeeper, AnimalTrainer
-from animal import Animal, Mammal, Reptile, MarineAnimal, BigCat, Monkey
+from animal import Animal
+from staff import Staff
+
 
 class Registry(ABC):
 
@@ -25,6 +26,10 @@ class Registry(ABC):
             f"{self.get_members_string()}\n"
         )
 
+    @property
+    def members(self):
+        return self._members
+
     def get_members_string(self):
         if self._members:
             return(
@@ -38,13 +43,13 @@ class Registry(ABC):
     def generate_next_id(self):    # To generate an ID based on existing ID sequence.
         if len(self._members) == 0:
             return "001"
-        existing_ids = [int(id) for id in self._members.keys()]
+        existing_ids = [int(iden) for iden in self._members.keys()]
         new_id = max(existing_ids) + 1
         return "00" + str(new_id)
 
-    def search_for_item(self, id):
+    def search_for_item(self, iden):
         for member in self._members.values():
-            if member.id == id:
+            if member.id == iden:
                 return member
         return None
 
@@ -69,6 +74,9 @@ class StaffRegistry(Registry):    # A class to hold a dictionary of staff member
 
 
 class AnimalRegistry(Registry):
+
+    from animal import Animal, Mammal, Reptile, MarineAnimal, BigCat, Monkey
+
     def __init__(self, registry_name):
         super().__init__(registry_name)
 
@@ -82,6 +90,7 @@ class AnimalRegistry(Registry):
 
 
 class EnclosureRegistry(Registry):
+
     def __init__(self, registry_name):
         super().__init__(registry_name)
 

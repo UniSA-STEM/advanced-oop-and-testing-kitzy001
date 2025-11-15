@@ -7,12 +7,10 @@ Username: kitzy001
 This is my own work as defined by the University's Academic Integrity Policy.
 """
 
-from staff import Staff, Veterinarian, Zookeeper, AnimalTrainer
-from animal import Animal, Mammal, Reptile, MarineAnimal, BigCat, Monkey
-from enclosure import Enclosure, Terrarium, Savannah, African, Aquarium, Jungle
-from registry import Registry, StaffRegistry, AnimalRegistry, EnclosureRegistry
-from report import HealthReport, BigCatReport
-import pytest
+from staff import Veterinarian, Zookeeper, AnimalTrainer
+from animal import  Mammal, Reptile, BigCat, Monkey
+from enclosure import Terrarium, Jungle
+from registry import StaffRegistry, AnimalRegistry, EnclosureRegistry
 
 class TestAnimalStats:
 
@@ -56,8 +54,7 @@ class TestAnimalStats:
         animal.set_energy(-110)
         assert animal.energy == 0
 
-    @staticmethod
-    def test_set_happiness_above_100():    # Validates animal happiness can not exceed 100.
+    def test_set_happiness_above_100(self):    # Validates animal happiness can not exceed 100.
         animal = Mammal("Max", "giraffe", 10)
         animal.set_happiness(60)
         assert animal.happiness == 100
@@ -165,4 +162,54 @@ class TestEnclosureMethods:
         assert animal_1.health == 90
         assert animal_2.health == 90
 
+    def test_check_for_contamination(self):
+        enclosure = Jungle("Jagged Jungle", 10)
+        animal = Monkey("Marcel", "chimpanzee", 10)
+        animal_registry = AnimalRegistry("Zootopia - Animals")
+        animal_registry.add_new(animal)
+        enclosure.add_animal_to_enclosure(animal)
+        animal.set_health(-75)
+        animal.check_health()
+        assert enclosure.check_for_contamination() is True
 
+    def test_add_animal_to_enclosure(self, capsys):
+        enclosure = Terrarium("Lizard Terrarium", 10)
+        animal = Reptile("Lizzy", "lizard", 10)
+        animal_registry = AnimalRegistry("Zootopia - Animals")
+        animal_registry.add_new(animal)
+        enclosure.add_animal_to_enclosure(animal)
+        captured = capsys.readouterr()
+        assert f"{animal.name} has been added to the enclosure: {enclosure.name}" in captured.out
+
+    def test_set_temperature(self):
+        enclosure = Terrarium("Lizard Terrarium", 10)
+        enclosure.set_temperature(30)
+        assert enclosure.temperature == 30
+
+    def test_search_for_animal(self):
+        enclosure = Jungle("Jagged Jungle", 10)
+        animal = Monkey("Marcel", "chimpanzee", 10)
+        animal_registry = AnimalRegistry("Zootopia - Animals")
+        animal_registry.add_new(animal)
+        enclosure.add_animal_to_enclosure(animal)
+        assert enclosure.search_for_animal("A-001") is not None
+        assert enclosure.search_for_animal("A-002") is None
+
+class TestRegistryMethods:
+
+    def test_add_to_enclosure_registry(self):
+        enclosure_registry = EnclosureRegistry("Zootopia - Enclosures")
+        enclosure = Jungle("Jagged Jungle", 10)
+        enclosure_registry.add_new(enclosure)
+        assert enclosure_registry.members is not None
+
+    def test_add_to_staff_registry(self):
+        staff_registry = StaffRegistry("Zootopia - Staff")
+        staff_registry.add_new("Val", Veterinarian)
+        assert staff_registry.members is not None
+
+    def test_add_to_animal_registry(self):
+        animal_registry = AnimalRegistry("Zootopia - Animals")
+        animal = Reptile("Lizzy", "lizard", 10)
+        animal_registry.add_new(animal)
+        assert animal_registry.members is not None
