@@ -134,7 +134,7 @@ class Enclosure(ABC):
         Parameters:
             animal(Animal): The animal to remove from the enclosure.
         """
-        animal_id = animal.get_id()
+        animal_id = animal.id
         is_in_enclosure = self.search_for_animal(animal_id)
         if is_in_enclosure:
             self._animals.remove(animal)
@@ -150,8 +150,9 @@ class Enclosure(ABC):
         """
         animal_str = ""
         animals = self._animals
+        print(f"Animals in {self.name}:\n")
         for animal in animals:
-            animal_str += "-----" + str(animal) + "\n"
+            animal_str += "-----" + "\n" + str(animal)
         if animal_str == "":
             animal_str = "Empty."
         print(animal_str)
@@ -176,6 +177,17 @@ class Enclosure(ABC):
             return True
         return False
 
+    def set_diet_for_all(self, diet):
+        """
+        This method takes a string and updates the diet for all animals in the enclosure.
+
+        Parameters:
+            diet(str): The diet to update.
+        """
+        if isinstance(diet, str):
+            for animal in self._animals:
+                animal.set_diet(diet)
+
 class Jungle(Enclosure):
 
     def __init__(self, name, capacity):
@@ -192,8 +204,8 @@ class Jungle(Enclosure):
         """
         Adds a descriptive string to the parent method.
         """
-        new_str = super().__str__() + "\n"
-        new_str += f"Is currently raining: {self.is_raining}.\n"
+        new_str = super().__str__()
+        new_str += f"Is currently raining: {self.is_raining}\n"
         return new_str
 
     @property
@@ -223,7 +235,7 @@ class Jungle(Enclosure):
             if added:
                 print(f"{animal.name} has been added to the enclosure: {self.name}")
         else:
-            raise TypeError("Animal must be of type Monkey.")
+            raise TypeError("Animal must be of type Monkey.\n")
 
 
 class Savannah(Enclosure):
@@ -245,7 +257,7 @@ class Savannah(Enclosure):
             if added:
                 print(f"{animal.name} has been added to the enclosure: {self._name}")
         else:
-            raise TypeError("Animal must be of type Mammal.")
+            raise TypeError("Animal must be of type Mammal.\n")
 
 
 class African(Savannah):
@@ -266,7 +278,7 @@ class African(Savannah):
             if added:
                 print(f"{animal.name} has been added to the enclosure: {self.name}")
         else:
-            raise TypeError("Animal must be of type Big Cat.")
+            raise TypeError("Animal must be of type Big Cat.\n")
 
 
 class ControlledEnclosure(Enclosure):
@@ -286,7 +298,7 @@ class ControlledEnclosure(Enclosure):
         Adds a descriptive string to the parent method.
         """
         new_str = super().__str__() + "\n"
-        new_str += f"Temperature: {self.temperature} degrees Celsius\n"
+        new_str += f"Temperature: {self.temperature} degrees Celsius.\n"
         return new_str
 
     @property
@@ -303,7 +315,7 @@ class ControlledEnclosure(Enclosure):
         if isinstance(temperature, int) or isinstance(temperature, float):
             self.__temperature = temperature
         else:
-            raise TypeError("Temperature must be of type int or float.")
+            raise TypeError("Temperature must be of type int or float.\n")
 
     def add_animal_to_enclosure(self, animal):
         pass
@@ -328,7 +340,7 @@ class Terrarium(ControlledEnclosure):
             if added:
                 print(f"{animal.name} has been added to the enclosure: {self.name}")
         else:
-            raise TypeError("Animal must be of type Reptile.")
+            raise TypeError("Animal must be of type Reptile.\n")
 
 
 class Aquarium(ControlledEnclosure):
@@ -350,7 +362,7 @@ class Aquarium(ControlledEnclosure):
             if added:
                 print(f"{animal.name} has been added to the enclosure: {self.name}")
         else:
-            raise TypeError("Animal must be of type MarineAnimal.")
+            raise TypeError("Animal must be of type MarineAnimal.\n")
 
 
 

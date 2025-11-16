@@ -46,7 +46,6 @@ class Animal(ABC):
             f"ID: {self.id if self.id is not None else "Not registered yet"}\n"
             f"Diet: {self.__diet if self.__diet is not None else "Not yet set"}\n"
             f"Health status: {self.health} ({self.check_health()})\n"
-            f"Enclosure: {self.__enclosure}\n"
         )
 
     @abstractmethod
@@ -271,7 +270,7 @@ class Animal(ABC):
         This method checks to see if an animal is fit for enclosure transfer, based on their sickness
         or behaviour, and returns a boolean value of true or false.
         """
-        if self.is_sick or self.aggression >= 40:
+        if self.is_sick or self.aggression >= 30:
             return False
         else:
             return True
@@ -306,7 +305,7 @@ class Mammal(Animal):
             raise TypeError("Habitat must be of type string.")
 
     def cry(self):
-        print("Mammal noises...")
+        print("Mammal noises...\n")
 
     def respond_to_zookeeper(self):
         """
@@ -320,6 +319,7 @@ class Mammal(Animal):
         else:
             happiness_gained = -20
         self.set_happiness(happiness_gained)
+        return True
 
 
 class Reptile(Animal):
@@ -333,7 +333,7 @@ class Reptile(Animal):
         self.__egg_count = 0
 
     def cry(self):
-        print("Hiss...")
+        print("Hiss...\n")
 
     def respond_to_zookeeper(self):
         """
@@ -347,6 +347,7 @@ class Reptile(Animal):
         else:
             happiness_gained = - 40
         self.set_happiness(happiness_gained)
+        return True
 
     def lay_egg(self):
         """
@@ -381,7 +382,7 @@ class MarineAnimal(Animal):
         Animal.__init__(self, name, species, age, diet)
 
     def cry(self):
-        print("Underwater noises....")
+        print("Underwater noises....\n")
 
     def respond_to_zookeeper(self):
         """
@@ -395,6 +396,7 @@ class MarineAnimal(Animal):
         else:
             happiness_gained = -50
         self.set_happiness(happiness_gained)
+        return True
 
     def swim_with_trainer(self):
         """
@@ -428,12 +430,11 @@ class BigCat(Mammal):
         Mammal.__init__(self, name, species, age, diet)
         self.__strength = 50
         self.__animals_attacked = []
-        self.__attack_count = len(self.get_animals_attacked())
         self.set_aggression(25)
 
     @property
     def attack_count(self):
-        return self.__attack_count
+        return len(self.__animals_attacked)
 
     @property
     def strength(self):
@@ -459,8 +460,18 @@ class BigCat(Mammal):
         """
         return self.__animals_attacked
 
+    def print_animals_attacked(self):
+        """
+        This method prints a list of the animals this animal has attacked.
+        """
+        animals = self.get_animals_attacked()
+        print(f"Animals attacked by {self.name}:")
+        for animal in animals:
+            print(animal.name)
+        print()
+
     def cry(self):
-        print("Roar!!!")
+        print("Roar!!!\n")
 
     def attack(self, opponent):
         """
@@ -476,9 +487,9 @@ class BigCat(Mammal):
             self.set_health(int(self_damage))
             opponent_damage = self.get_damage()
             opponent.set_health(int(opponent_damage))
+            print(f"{self.name} attacks {opponent.name}! {opponent.name} loses {opponent_damage} health.\n")
             self.__animals_attacked.append(opponent)
             self.set_aggression(10)
-            print(self.__animals_attacked)
         else:
             print(f"{self.name} cannot attack {opponent.name} as they are a {opponent.species}.")
 
@@ -493,6 +504,7 @@ class BigCat(Mammal):
 
     def respond_to_zookeeper(self):
         super().respond_to_zookeeper()
+        return True
 
     def provoke_visitor(self):
         """
@@ -520,6 +532,7 @@ class BigCat(Mammal):
         """
         super().explore()
         print(f"{self.name} runs around the plains...\n")
+
 
 class Monkey(Mammal):
 
@@ -552,8 +565,11 @@ class Monkey(Mammal):
         if enclosure is not None:
             if not enclosure.is_raining:
                 super().respond_to_zookeeper()
+                return True
             else:
                 print(f"{self.name} will not interact with zoo staff while it is raining.\n")
+                return False
+        return None
 
     def explore(self):
         """

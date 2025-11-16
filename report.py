@@ -30,6 +30,7 @@ class HealthReport:
                 f"Aggression level: {animal.aggression}\n"
                 f"Happiness level: {animal.happiness}\n"
                 f"Energy level: {animal.energy}\n"
+                f"Fit for transfer: {animal.fit_for_transfer()}\n"
             )
         else:
             return()

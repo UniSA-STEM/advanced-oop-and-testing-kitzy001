@@ -36,6 +36,7 @@ class Staff:
         return(
             f"Staff name: {self.name}\n"
             f"ID: {self._id}\n"
+            f"Specialisation: {self.__class__.__name__}\n"
         )
 
     @property
@@ -66,13 +67,13 @@ class Staff:
             if isinstance(animal, MarineAnimal) and not self.can_swim:
                 raise RequirementsError(self.name)
             if self.can_enrich_animal:
-                happiness_increase = 10
-                animal.set_happiness(happiness_increase)
-                print(f"{self.name} enriched {animal.name}.")
+                interacted = animal.respond_to_zookeeper()
+                if interacted is True:
+                    print(f"{self.name} enriched {animal.name}.\n")
             else:
-                print(f"{self.name} is not able to interact with {animal.name} due to their role.")
+                print(f"{self.name} is not able to interact with {animal.name} due to their role.\n")
         else:
-            raise ValueError("Animal must be of type Animal.")
+            raise ValueError("Animal must be of type Animal.\n")
 
     def clock_in(self):
         self._is_working = True
@@ -90,7 +91,7 @@ class Staff:
         if isinstance(boolean, bool):
             self._is_on_leave = boolean
         else:
-            raise ValueError("Must enter True or False.")
+            raise ValueError("Must enter True or False.\n")
 
     def learn_to_swim(self):
         self._can_swim = True
@@ -106,7 +107,7 @@ class Veterinarian(Staff):
         """
         super().__init__(name, staff_id)
         self.__skill_level = skill_level
-        self.__can_handle_animal = True
+        self._can_handle_animal = True
 
     @property
     def skill_level(self):
@@ -133,7 +134,7 @@ class Veterinarian(Staff):
             )
             self.increase_skill_level()
         else:
-            raise TypeError("Input must be of the type Animal")
+            raise TypeError("Input must be of the type Animal.\n")
 
     def administer_medication(self, animal):
         """"
@@ -144,12 +145,12 @@ class Veterinarian(Staff):
         if isinstance(animal, Animal):
             if isinstance(animal, MarineAnimal) and not self.can_swim:
                 raise RequirementsError(self.name)
-            health_increase = 25
+            health_increase = 30
             animal.set_health(health_increase)
             print(f"{self.name} administering medication to {animal.name}...\n")
             self.increase_skill_level()
         else:
-            raise TypeError("Input must be of the type Animal")
+            raise TypeError("Input must be of the type Animal.\n")
 
 
 class AnimalTrainer(Staff):
@@ -177,9 +178,9 @@ class AnimalTrainer(Staff):
             else:
                 aggression_decrease = -20
                 animal.set_aggression(aggression_decrease)
-                print(f"{self.name} has trained {animal.name}.")
+                print(f"{self.name} has trained {animal.name}.\n")
         else:
-            raise TypeError("Input must be of the type Animal")
+            raise TypeError("Input must be of the type Animal.\n")
 
 
 class Zookeeper(Staff):
@@ -189,7 +190,7 @@ class Zookeeper(Staff):
         Initialises an instance of the ZooKeeper class, subclass of Staff.
         """
         super().__init__(name, staff_id)
-        self.__can_enrich_animal = True
+        self._can_enrich_animal = True
 
     def clean_enclosure(self, enclosure):
         """"
@@ -204,9 +205,9 @@ class Zookeeper(Staff):
                 raise RequirementsError(self.name)
             else:
                 enclosure.set_is_clean(True)
-                print(f"{self.name} has cleaned {enclosure.name}.")
+                print(f"{self.name} has cleaned {enclosure.name}.\n")
         else:
-            raise TypeError("Must be of the type Enclosure.")
+            raise TypeError("Must be of the type Enclosure.\n")
 
     def feed_animal(self, animal, units):
         """"
@@ -225,11 +226,11 @@ class Zookeeper(Staff):
             if isinstance(units, int):
                 animal.set_hunger(units)
                 animal.set_health(int(units / 2))
-                print(f"{self.name} has feed {animal.name}.")
+                print(f"{self.name} has feed {animal.name}.\n")
             else:
-                raise TypeError("Value must be an integer.")
+                raise TypeError("Value must be an integer.\n")
         else:
-            raise TypeError("Must be of the type Animal.")
+            raise TypeError("Must be of the type Animal.\n")
 
     def update_enclosure_temp(self, enclosure, temperature):
         """"
@@ -242,9 +243,9 @@ class Zookeeper(Staff):
         """
         if isinstance(enclosure, Terrarium) or isinstance(enclosure, Aquarium):
             enclosure.set_temperature(temperature)
-            print(f"{self.name} has updated the temperature for {enclosure.name}.")
+            print(f"{self.name} has updated the temperature for {enclosure.name}.\n")
         else:
-            raise TypeError("Must be of type Terrarium or Aquarium.")
+            raise TypeError("Must be of type Terrarium or Aquarium.\n")
 
     def update_jungle_weather(self, enclosure, boolean):
         """"
@@ -256,9 +257,9 @@ class Zookeeper(Staff):
         """
         if isinstance(enclosure, Jungle):
             enclosure.set_is_raining(boolean)
-            print(f"{self.name} has updated the weather status for {enclosure.name}.")
+            print(f"{self.name} has updated the weather status for {enclosure.name}.\n")
         else:
-            raise TypeError("Must be of type Jungle.")
+            raise TypeError("Must be of type Jungle.\n")
 
     def inspect_enclosure(self, enclosure):
         """
@@ -274,12 +275,12 @@ class Zookeeper(Staff):
             if isinstance(enclosure, Aquarium) and not self.can_swim:
                 raise RequirementsError(self.name)
             if enclosure.is_clean:
-                 print(f"{self.name} has found {enclosure.name} to be clean.")
+                 print(f"{self.name} has found {enclosure.name} to be clean.\n")
             else:
                 enclosure.decrease_animals_health()
                 print(f"{enclosure.name} is not clean! Animals in {enclosure.name} have lost health as a result.\n")
         else:
-            raise TypeError("Must be of type Enclosure.")
+            raise TypeError("Must be of type Enclosure.\n")
 
 
 class Administrator(Staff):
@@ -290,7 +291,7 @@ class Administrator(Staff):
         Sets can_enrich_animal to false as Administrator cannot enrich an animal.
         """
         super().__init__(name, staff_id)
-        self.__can_enrich_animal = False
+        self._can_enrich_animal = False
 
     def generate_single_animal_report(self, animal):
         """
@@ -308,7 +309,7 @@ class Administrator(Staff):
             else:
                 print(HealthReport.generate(animal))
         else:
-            raise TypeError("Input must be of the type Animal")
+            raise TypeError("Input must be of the type Animal.\n")
 
     def generate_enclosure_report(self, enclosure):
         """
@@ -322,7 +323,7 @@ class Administrator(Staff):
             print(enclosure, "\n")
             enclosure.display_animals()
         else:
-            raise TypeError("Input must be of the type Enclosure.")
+            raise TypeError("Input must be of the type Enclosure.\n")
 
     def generate_staff_report(self, registry):
         """
@@ -336,7 +337,7 @@ class Administrator(Staff):
             print(f"{self.name} printing report...\n")
             print(registry, "\n")
         else:
-            raise TypeError("Input must be of the type StaffRegistry.")
+            raise TypeError("Input must be of the type StaffRegistry.\n")
 
     def generate_all_animals_report(self, registry):
         """
@@ -350,7 +351,7 @@ class Administrator(Staff):
             print(f"{self.name} printing report...\n")
             print(registry, "\n")
         else:
-            raise TypeError("Input must be of the type AnimalRegistry.")
+            raise TypeError("Input must be of the type AnimalRegistry.\n")
 
     def generate_all_enclosure_report(self, registry):
         """
@@ -364,7 +365,7 @@ class Administrator(Staff):
             print(f"{self.name} printing report...\n")
             print(registry, "\n")
         else:
-            raise TypeError("Input must be of the type EnclosureRegistry.")
+            raise TypeError("Input must be of the type EnclosureRegistry.\n")
 
     def approve_staff_leave(self, staff):
         """
@@ -376,9 +377,9 @@ class Administrator(Staff):
         """
         if isinstance(staff, Staff):
             staff.is_on_leave = True
-            print(f"{self.name} approves leave for {staff.name}.")
+            print(f"{self.name} approves leave for {staff.name}.\n")
         else:
-            raise TypeError("Input must be of the type Staff.")
+            raise TypeError("Input must be of the type Staff.\n")
 
     def update_staff_leave(self, staff):
         """
@@ -390,9 +391,9 @@ class Administrator(Staff):
         """
         if isinstance(staff, Staff):
             staff.is_on_leave = False
-            print(f"{self.name} ends leave for {staff.name}.")
+            print(f"{self.name} ends leave for {staff.name}.\n")
         else:
-            raise TypeError("Input must be of the type Staff.")
+            raise TypeError("Input must be of the type Staff.\n")
 
     def transfer_animal(self, animal, current_enclosure, target_enclosure):
         """
@@ -405,17 +406,17 @@ class Administrator(Staff):
             target_enclosure (Enclosure): The enclosure to transfer to.
         """
         if not isinstance(animal, Animal):
-            raise TypeError("Input must be of the type Animal")
+            raise TypeError("Input must be of the type Animal.\n")
         if not isinstance(current_enclosure, Enclosure):
-            raise TypeError("Input must be of the type Enclosure")
+            raise TypeError("Input must be of the type Enclosure.\n")
         if not isinstance(target_enclosure, Enclosure):
-            raise TypeError("Input must be of the type Enclosure")
+            raise TypeError("Input must be of the type Enclosure.\n")
         if animal.fit_for_transfer() is False:
             print(f"Unable to move {animal.name} due to their health and/or behaviour. Run a report for more info.\n")
         else:
             current_enclosure.remove_animal(animal)
             target_enclosure.add_animal_to_enclosure(animal)
-            print(f"{self.name} successfully transferred {animal.name} to {current_enclosure.name}.\n")
+            print(f"{self.name} successfully transferred {animal.name} to {target_enclosure.name}.\n")
 
 
 

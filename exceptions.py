@@ -17,7 +17,7 @@ class UnregisteredAnimal(Exception):
         Parameters:
             animal_name(str): The name of the animal.
         """
-        super().__init__(f"The animal {animal_name} has no ID. Add {animal_name} to the registry first.")
+        super().__init__(f"The animal {animal_name} has no ID. Add {animal_name} to the registry first.\n")
 
 class EnclosureCapacityError(Exception):
 
@@ -29,7 +29,7 @@ class EnclosureCapacityError(Exception):
         Parameters:
             enclosure_name(str): The enclosure to add to the registry.
         """
-        super().__init__(f"Enclosure '{enclosure_name}' is at capacity, cannot add animal.")
+        super().__init__(f"Enclosure '{enclosure_name}' is at capacity, cannot add animal.\n")
 
 class RequirementsError(Exception):
 
@@ -41,4 +41,4 @@ class RequirementsError(Exception):
         Parameters:
             staff_name(str): The staff name trying to complete the action.
         """
-        super().__init__(f"Staff member {staff_name} cannot swim, therefore cannot complete this action.")
+        super().__init__(f"Staff member {staff_name} cannot swim, therefore cannot complete this action.\n")
