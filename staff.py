@@ -22,12 +22,12 @@ class Staff:
             name (str): The name of the staff member.
             staff_id(str): The id of the staff member.
         """
-        self.__name = name
-        self.__id = staff_id
-        self.__is_working = False
-        self.__can_enrich_animal = False
-        self.__is_on_leave = False
-        self.__can_swim = False
+        self._name = name
+        self._id = staff_id
+        self._is_working = False
+        self._can_enrich_animal = False
+        self._is_on_leave = False
+        self._can_swim = False
 
     def __str__(self):
         """
@@ -35,24 +35,24 @@ class Staff:
         """
         return(
             f"Staff name: {self.name}\n"
-            f"ID: {self.__id}\n"
+            f"ID: {self._id}\n"
         )
 
     @property
     def name(self):
-        return self.__name
+        return self._name
 
     @property
     def id(self):
-        return self.__id
+        return self._id
 
     @property
     def can_enrich_animal(self):
-        return self.__can_enrich_animal
+        return self._can_enrich_animal
 
     @property
     def can_swim(self):
-        return self.__can_swim
+        return self._can_swim
 
     def enrich_animal(self, animal):
         """
@@ -63,20 +63,22 @@ class Staff:
             animal (Animal): The animal to enrich.
         """
         if isinstance(animal, Animal):
+            if isinstance(animal, MarineAnimal) and not self.can_swim:
+                raise RequirementsError(self.name)
             if self.can_enrich_animal:
                 happiness_increase = 10
                 animal.set_happiness(happiness_increase)
                 print(f"{self.name} enriched {animal.name}.")
             else:
-                print(f"{self.name} is not able to interact with {animal.name}.")
+                print(f"{self.name} is not able to interact with {animal.name} due to their role.")
         else:
             raise ValueError("Animal must be of type Animal.")
 
     def clock_in(self):
-        self.__is_working = True
+        self._is_working = True
 
     def clock_out(self):
-        self.__is_working = False
+        self._is_working = False
 
     def set_is_on_leave(self, boolean):
         """
@@ -86,12 +88,12 @@ class Staff:
             boolean (bool): True or False.
         """
         if isinstance(boolean, bool):
-            self.__is_on_leave = boolean
+            self._is_on_leave = boolean
         else:
             raise ValueError("Must enter True or False.")
 
     def learn_to_swim(self):
-        self.__can_swim = True
+        self._can_swim = True
 
 class Veterinarian(Staff):
 
@@ -157,7 +159,7 @@ class AnimalTrainer(Staff):
         Initialises an instance of the AnimalTrainer class, subclass of Staff.
         """
         super().__init__(name, staff_id)
-        self.__can_enrich_animal = True
+        self._can_enrich_animal = True
 
     def train_animal(self, animal):
         """"

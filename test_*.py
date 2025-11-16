@@ -6,11 +6,12 @@ ID: 110484404
 Username: kitzy001
 This is my own work as defined by the University's Academic Integrity Policy.
 """
-
+import pytest
 from staff import Veterinarian, Zookeeper, AnimalTrainer
-from animal import  Mammal, Reptile, BigCat, Monkey
+from animal import  Mammal, Reptile, BigCat, Monkey, MarineAnimal
 from enclosure import Terrarium, Jungle
 from registry import StaffRegistry, AnimalRegistry, EnclosureRegistry
+from exceptions import RequirementsError
 
 class TestAnimalStats:
 
@@ -184,6 +185,20 @@ class TestStaffMethods:
         animal = BigCat("Max", "lion", 10)
         staff.train_animal(animal)
         assert animal.aggression == 5
+
+    def test_enrich_animal(self, capsys):
+        """
+        Tests that the enrich_animal method updates the animals aggression attribute accordingly, in
+        edge cases where the staff member cannot swim and tries to enrich a MarineAnimal.
+        """
+        staff = AnimalTrainer("Val", "S-001")
+        animal = MarineAnimal("Dolly", "dolphin", 5)
+        with pytest.raises(RequirementsError):
+            staff.enrich_animal(animal)
+        staff.learn_to_swim()
+        staff.enrich_animal(animal)
+        captured = capsys.readouterr()
+        assert f"{staff.name} enriched {animal.name}." in captured.out
 
     def test_clean_enclosure(self):
         """
