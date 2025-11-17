@@ -274,6 +274,7 @@ class Zookeeper(Staff):
         if isinstance(enclosure, Enclosure):
             if isinstance(enclosure, Aquarium) and not self.can_swim:
                 raise RequirementsError(self.name)
+            enclosure.check_for_contamination()
             if enclosure.is_clean:
                  print(f"{self.name} has found {enclosure.name} to be clean.\n")
             else:
